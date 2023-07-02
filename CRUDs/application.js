@@ -1,8 +1,10 @@
 
+const applications = [];
+
 module.exports = function(app){
 
     app.get('/applications', function(req, res){
-        res.send('Applications GET ALL');
+        res.send(applications);
     });
 
     app.get('/applications/:id', function(req, res){

@@ -1,4 +1,6 @@
 
+const messages = [];
+
 module.exports = function(app){
 
     app.get('/messages', function(req, res){

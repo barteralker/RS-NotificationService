@@ -1,4 +1,6 @@
 
+const event = [];
+
 module.exports = function(app){
 
     app.get('/events', function(req, res){

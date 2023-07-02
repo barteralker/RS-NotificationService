@@ -1,4 +1,6 @@
 
+const notifications = [];
+
 module.exports = function(app){
 
     app.get('/notofications', function(req, res){
