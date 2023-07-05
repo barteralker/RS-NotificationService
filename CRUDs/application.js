@@ -70,12 +70,12 @@ module.exports = function(app){
             return;
         };
     
-        const app = applications.find(a => a.id == req.params.id);
+        const application = applications.find(a => a.id == req.params.id);
 
-        app.name = req.body.name || app.name;
-        app.description = req.body.description || app.description;
+        application.name = req.body.name || application.name;
+        application.description = req.body.description || application.description;
 
-        res.send(`Applications with id ${req.params.id} updated`);
+        res.send(`Application with id ${req.params.id} updated`);
     });
     
     app.delete('/applications/:id', function(req, res){
