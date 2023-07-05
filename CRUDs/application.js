@@ -1,7 +1,7 @@
 
 const express = require('express');
-const app = express();
-app.use(express.json());
+const routerApp = express.Router();
+routerApp.use(express.json());
 
 const Joi = require('joi');
 
@@ -24,70 +24,68 @@ function validateApp(body) {
 
 };
 
-module.exports = function(app){
+routerApp.get('/', function(req, res){
+    res.send(applications);
+});
 
-    app.get('/applications', function(req, res){
-        res.send(applications);
+routerApp.get('/:id', function(req, res){
+
+    if (!(applications.map((app) => app.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Application with id ${req.params.id} not found`);
+
+    res.send(applications.find( item => item.id == req.params.id))
+
+});
+
+routerApp.post('', function(req, res){
+    
+    const validationResult = validateApp(req.body);
+
+    if (validationResult.error) {
+        res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
+        return;
+    };
+
+    let id = applications.map((app) => app.id).reduce((a, b) => Math.max(a, b)) + 1;
+
+    applications.push({
+        id: id,
+        name: req.body.name,
+        description: req.body.description || ""
     });
 
-    app.get('/applications/:id', function(req, res){
+    res.send(`Application with id ${id} added successfully`);
 
-        if (!(applications.map((app) => app.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Application with id ${req.params.id} not found`);
+});
+
+routerApp.put('/:id', function(req, res){
+
+    if (!(applications.map((app) => app.id).includes(parseInt(req.params.id)))) return res.status(404).send(`App with id ${req.params.id} not found`);
     
-        res.send(applications.find( item => item.id == req.params.id))
+    const validationResult = validateApp(req.body);
 
-    });
+    if (validationResult.error) {
+        res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
+        return;
+    };
 
-    app.post('/applications', function(req, res){
-        
-        const validationResult = validateApp(req.body);
+    const application = applications.find(a => a.id == req.params.id);
 
-        if (validationResult.error) {
-            res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
-            return;
-        };
-    
-        let id = applications.map((app) => app.id).reduce((a, b) => Math.max(a, b)) + 1;
-    
-        applications.push({
-            id: id,
-            name: req.body.name,
-            description: req.body.description || ""
-        });
-    
-        res.send(`Application with id ${id} added successfully`);
-    
-    });
-    
-    app.put('/applications/:id', function(req, res){
+    application.name = req.body.name || application.name;
+    application.description = req.body.description || application.description;
 
-        if (!(applications.map((app) => app.id).includes(parseInt(req.params.id)))) return res.status(404).send(`App with id ${req.params.id} not found`);
-        
-        const validationResult = validateApp(req.body);
+    res.send(`Application with id ${req.params.id} updated`);
+});
 
-        if (validationResult.error) {
-            res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
-            return;
-        };
-    
-        const application = applications.find(a => a.id == req.params.id);
+routerApp.delete('/:id', function(req, res){
 
-        application.name = req.body.name || application.name;
-        application.description = req.body.description || application.description;
+    if (!(applications.map((app) => app.id).includes(parseInt(req.params.id)))) return res.status(404).send(`App with id ${req.params.id} not found`);
 
-        res.send(`Application with id ${req.params.id} updated`);
-    });
-    
-    app.delete('/applications/:id', function(req, res){
+    let app = applications.find( item => item.id == req.params.id);
+    let idx = applications.indexOf(app);
+    applications.splice(idx, 1);
 
-        if (!(applications.map((app) => app.id).includes(parseInt(req.params.id)))) return res.status(404).send(`App with id ${req.params.id} not found`);
+    res.send(app);
 
-        let app = applications.find( item => item.id == req.params.id);
-        let idx = applications.indexOf(app);
-        applications.splice(idx, 1);
-    
-        res.send(app);
+});
 
-    });
-
-}
+module.exports = routerApp;

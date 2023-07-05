@@ -1,7 +1,7 @@
 
 const express = require('express');
-const app = express();
-app.use(express.json());
+const routerApp = express.Router();
+routerApp.use(express.json());
 
 const Joi = require('joi');
 
@@ -20,69 +20,68 @@ function validateMessage(body) {
 
 };
 
-module.exports = function(app){
+routerApp.get('', function(req, res){
+    res.send(messages);
+});
 
-    app.get('/messages', function(req, res){
-        res.send(messages);
+routerApp.get('/:id', function(req, res){
+
+    if (!(messages.map((m) => m.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Message with id ${req.params.id} not found`);
+
+    res.send(messages.find( item => item.id == req.params.id))
+
+});
+
+routerApp.post('', function(req, res){
+    
+    const validationResult = validateMessage(req.body);
+
+    if (validationResult.error) {
+        res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
+        return;
+    };
+
+    let id = messages.map((m) => m.id).reduce((a, b) => Math.max(a, b)) + 1;
+
+    messages.push({
+        id: id,
+        notification_type: req.body.notification_type,
+        messageText: req.body.messageText,
     });
 
-    app.get('/messages/:id', function(req, res){
+    res.send(`Message with id ${id} added successfully`);
 
-        if (!(messages.map((m) => m.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Message with id ${req.params.id} not found`);
+});
+
+routerApp.put('/:id', function(req, res){
+
+    if (!(messages.map((m) => m.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Message with id ${req.params.id} not found`);
     
-        res.send(messages.find( item => item.id == req.params.id))
+    const validationResult = validateMessage(req.body);
 
-    });
+    if (validationResult.error) {
+        res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
+        return;
+    };
 
-    app.post('/messages', function(req, res){
-        
-        const validationResult = validateMessage(req.body);
+    const message = messages.find(a => a.id == req.params.id);
 
-        if (validationResult.error) {
-            res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
-            return;
-        };
-    
-        let id = messages.map((m) => m.id).reduce((a, b) => Math.max(a, b)) + 1;
-    
-        messages.push({
-            id: id,
-            notification_type: req.body.notification_type,
-            messageText: req.body.messageText,
-        });
-    
-        res.send(`Message with id ${id} added successfully`);
-    
-    });
-    
-    app.put('/messages/:id', function(req, res){
+    message.notification_type = req.body.notification_type || message.notification_type;
+    message.messageText = req.body.messageText || message.messageText;
 
-        if (!(messages.map((m) => m.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Message with id ${req.params.id} not found`);
-        
-        const validationResult = validateMessage(req.body);
+    res.send(`Message with id ${req.params.id} updated`);
+});
 
-        if (validationResult.error) {
-            res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
-            return;
-        };
-    
-        const message = messages.find(a => a.id == req.params.id);
+routerApp.delete('/:id', function(req, res){
 
-        message.notification_type = req.body.notification_type || message.notification_type;
-        message.messageText = req.body.messageText || message.messageText;
+    if (!(messages.map((m) => m.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Message with id ${req.params.id} not found`);
 
-        res.send(`Message with id ${req.params.id} updated`);
-    });
-    
-    app.delete('/messages/:id', function(req, res){
+    let message = messages.find( item => item.id == req.params.id);
+    let idx = messages.indexOf(message);
+    messages.splice(idx, 1);
 
-        if (!(messages.map((m) => m.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Message with id ${req.params.id} not found`);
+    res.send(message);
 
-        let message = messages.find( item => item.id == req.params.id);
-        let idx = messages.indexOf(message);
-        messages.splice(idx, 1);
-    
-        res.send(message);
+});
 
-    });
-}
+module.exports = routerApp;
