@@ -1,3 +1,11 @@
 {
-    "name" : "RS-NotificationService"
+    "name" : "RS-NotificationService",
+    "DB_Schema" : "rs_notification_service",
+    "DB_config" : {
+        "user": "postgres",
+        "host": "localhost",
+        "database": "personalprojects",
+        "password": "postgres",
+        "port": 5432
+    }
 }
