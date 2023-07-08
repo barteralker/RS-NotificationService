@@ -1,0 +1,134 @@
+-- DROP SCHEMA "rs-notification";
+
+CREATE SCHEMA "rs-notification" AUTHORIZATION postgres;
+
+-- DROP SEQUENCE "rs-notification".application_id_seq;
+
+CREATE SEQUENCE "rs-notification".application_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+-- DROP SEQUENCE "rs-notification".message_id_seq;
+
+CREATE SEQUENCE "rs-notification".message_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+-- DROP SEQUENCE "rs-notification".newtable_id_seq;
+
+CREATE SEQUENCE "rs-notification".newtable_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+-- DROP SEQUENCE "rs-notification".notification_id_seq;
+
+CREATE SEQUENCE "rs-notification".notification_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+-- DROP SEQUENCE "rs-notification".people_id_seq;
+
+CREATE SEQUENCE "rs-notification".people_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;-- "rs-notification".application definition
+
+-- Drop table
+
+-- DROP TABLE "rs-notification".application;
+
+CREATE TABLE "rs-notification".application (
+	id serial4 NOT NULL,
+	"name" varchar NULL,
+	description varchar NULL,
+	CONSTRAINT application_pk PRIMARY KEY (id)
+);
+
+
+-- "rs-notification".people definition
+
+-- Drop table
+
+-- DROP TABLE "rs-notification".people;
+
+CREATE TABLE "rs-notification".people (
+	id bigserial NOT NULL,
+	fullname text NULL,
+	gender text NULL,
+	phone text NULL,
+	age int4 NULL,
+	created_at timestamp NULL DEFAULT now()
+);
+
+
+-- "rs-notification"."event" definition
+
+-- Drop table
+
+-- DROP TABLE "rs-notification"."event";
+
+CREATE TABLE "rs-notification"."event" (
+	id int4 NOT NULL DEFAULT nextval('"rs-notification".newtable_id_seq'::regclass),
+	application_id int8 NOT NULL,
+	"name" varchar NULL,
+	description varchar NULL,
+	CONSTRAINT newtable_pk PRIMARY KEY (id),
+	CONSTRAINT newtable_fk FOREIGN KEY (application_id) REFERENCES "rs-notification".application(id)
+);
+
+
+-- "rs-notification".notification definition
+
+-- Drop table
+
+-- DROP TABLE "rs-notification".notification;
+
+CREATE TABLE "rs-notification".notification (
+	id serial4 NOT NULL,
+	event_id int8 NOT NULL,
+	"name" varchar NULL,
+	template_subject varchar NULL,
+	template_body varchar NULL,
+	CONSTRAINT notification_pk PRIMARY KEY (id),
+	CONSTRAINT notification_fk FOREIGN KEY (event_id) REFERENCES "rs-notification"."event"(id)
+);
+
+
+-- "rs-notification".message definition
+
+-- Drop table
+
+-- DROP TABLE "rs-notification".message;
+
+CREATE TABLE "rs-notification".message (
+	id serial4 NOT NULL,
+	message_text varchar NULL,
+	"timestamp" timestamp NULL,
+	notification_type int8 NULL,
+	CONSTRAINT message_pk PRIMARY KEY (id),
+	CONSTRAINT message_fk FOREIGN KEY (notification_type) REFERENCES "rs-notification".notification(id)
+);
+
+CREATE TABLE "rs-notification".people (
+    id BIGSERIAL,
+    fullname TEXT,
+    gender TEXT,
+    phone TEXT,
+    age INTEGER,
+    created_at TIMESTAMP DEFAULT NOW()
+);
