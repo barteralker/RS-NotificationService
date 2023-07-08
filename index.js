@@ -1,5 +1,5 @@
 
-const dbger = require('debug')('app:appDebugger');
+const debug = require('debug')('app:appDebugger');
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
@@ -25,4 +25,4 @@ app.get('/', (req, res) => {
 
 const port = process.env.port || 3001;
 
-app.listen(port, () => dbger(`Listening on Port ${port} !`));
+app.listen(port, () => debug(`Listening on Port ${port} !`));
