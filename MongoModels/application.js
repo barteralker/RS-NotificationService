@@ -16,9 +16,7 @@ async function getApplicationById(id) {
 
     debug(`In Applications Model - Getting Application with ID ${id}`);
 
-    const result = await Application.findById(id);
-
-    return result;
+    return (await Application.findById(id));
 
 }
 
@@ -31,9 +29,7 @@ async function createApplication(application) {
         description: application.description
     });    
 
-    const result = await mongoApplication.save();
-
-    return result;
+    return (await mongoApplication.save());
 
 }
 
@@ -41,12 +37,10 @@ async function updateApplication(id, application) {
 
     debug(`In Applications Model - Updating Application with ID : ${id}`);
 
-    const result = await Application.findByIdAndUpdate(id, {
+    return (await Application.findByIdAndUpdate(id, {
         name : application.name,
         description : application.description
-    });
-
-    return result;
+    }));
 
 }
 
@@ -54,9 +48,7 @@ async function deleteApplication(id) {
 
     debug(`In Applications Model - Deleting Application with ID : ${id}`);
 
-    const result = await Application.findByIdAndDelete(id);
-
-    return result;
+    return (await Application.findByIdAndDelete(id));
 
 }
 
