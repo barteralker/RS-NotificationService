@@ -1,8 +1,6 @@
 
 const debug = require('debug')('app:appDebugger');
-const pg = require('../DBConns/pgConnection');
 const Application = require('../MongooseCollections/application').Application;
-const queries = require('../PostgresQueries/application');
 
 async function getAllApplications() {
 
