@@ -2,6 +2,7 @@
 const debug = require('debug')('app:appDebugger');
 const { query } = require('express');
 const pg = require('../DBConns/pgConnection');
+const mongo = require('../DBConns/mongooseConnection');
 const queries = require('../PostgresQueries/application');
 
 async function getAllApplications() {
@@ -27,7 +28,7 @@ async function getApplicationById(id) {
 
     const result = await pool.query(querySQl, values);
     
-    await pool.end();   
+    await pool.end();
 
     return result;
 
@@ -37,14 +38,12 @@ async function createApplication(application) {
 
     debug(`In Applications Model - Creating New Application`);
 
-    pool = new pg.Pool(pg.credentials);
+    const mongoApplication = new mongo.Application({
+        name : application.name,
+        description: application.description
+    });    
 
-    const querySQl = queries.CREATE_APPLICATION;
-    const values = [application.name, application.description];
-
-    const result = await pool.query(querySQl, values);
-    
-    await pool.end();   
+    const result = await mongoApplication.save();
 
     return result;
 

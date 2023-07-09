@@ -23,6 +23,8 @@ app.get('/', (req, res) => {
     res.send('Welcome to Notification Service');
 })
 
-const port = process.env.port || 3001;
+const DB_Conn = require('./resources/config.json').DB_CONN;
+debug(`Connecting to ${DB_Conn} DB..!!`)
 
+const port = process.env.port || require('./resources/config.json').port;
 app.listen(port, () => debug(`Listening on Port ${port} !`));
