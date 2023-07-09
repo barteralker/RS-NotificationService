@@ -1,8 +1,6 @@
 
 const debug = require('debug')('app:appDebugger');
-const { query } = require('express');
 const pg = require('../DBConns/pgConnection');
-// const mongo = require('../DBConns/mongooseConnection');
 const queries = require('../PostgresQueries/application');
 
 async function getAllApplications() {
@@ -26,7 +24,7 @@ async function getApplicationById(id) {
     const querySQl = queries.GET_APPLICATION_BY_ID;
     const values = [id];
 
-    const resultP = await pool.query(querySQl, values);
+    const result = await pool.query(querySQl, values);
     
     await pool.end();
 
@@ -38,30 +36,15 @@ async function createApplication(application) {
 
     debug(`In Applications Model - Creating New Application`);
 
-    // if (process.env.DB_CONN === 'PG') {
+    pool = new pg.Pool(pg.credentials);
 
-        pool = new pg.Pool(pg.credentials);
+    const querySQl = queries.CREATE_APPLICATION;
+    const values = [application.name, application.description];
 
-        const querySQl = queries.CREATE_APPLICATION;
-        const values = [application.name, application.description];
-
-        const result = await pool.query(querySQl, values);
-        
-        await pool.end();
+    const result = await pool.query(querySQl, values);
     
-    // }
-
-    // if (process.env.DB_CONN === 'MONGO') {
-
-    //     const mongoApplication = new mongo.Application({
-    //         name : application.name,
-    //         description: application.description
-    //     });    
-
-    //     const result = await mongoApplication.save();
-
-    // }
-
+    await pool.end();
+    
     return result;
 
 }

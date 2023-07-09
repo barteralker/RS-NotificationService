@@ -1,10 +1,11 @@
 
 const debug = require('debug')('app:appDebugger');
-const applicationPGModel = require('../PGModels/application');
-const applicationMongoModel = require('../MongoModels/application');
 const DB_Conn = require('../resources/config.json').DB_CONN;
 const Constants = require('../resources/constants');
 const Joi = require('joi');
+
+if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../PostgresModels/application'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../MongoModels/application'); };
 
 function validateApp(body) {
 
@@ -22,7 +23,12 @@ function validateApp(body) {
 async function getAllApplications() {
 
     debug(`In Applications Controller - Getting All Applications`);
-    return (await applicationPGModel.getAllApplications()).rows;
+
+    result = await applicationModel.getAllApplications();
+
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
@@ -30,9 +36,11 @@ async function getApplicationById(id) {
 
     debug(`In Applications Controller - Getting Application with ID ${id}`);
 
-    result = await applicationPGModel.getApplicationById(id);
+    result = await applicationModel.getApplicationById(id);
 
-    return (result.rows.length > 0 ? result.rows : `Application with ID ${id} does not exist`);
+    if (DB_Conn === Constants.DB_CONNS_PG) return (result.rows.length > 0 ? result.rows : `Application with ID ${id} does not exist`);
+
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result !== null ? result : `Application with ID ${id} does not exist`;
 
 }
 
@@ -40,42 +48,25 @@ async function createApplication(application) {
 
     debug(`In Applications Controller - Creating New Application`);
 
-    const validationResult = validateApp(application);
+    if (validateApp(application).error) return `Error : ${validationResult.error.details[0].message}`;
 
-    if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
+    result = await applicationModel.createApplication(application);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) {
+    if (DB_Conn === Constants.DB_CONNS_PG) return `New Application with Id : ${result.rows[0]["id"]} created`;
 
-        result = await applicationPGModel.createApplication(application);
-        return `New Application with Id : ${result.rows[0]["id"]} created`;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return `New Application with Id : ${result["_id"]} created`;
     
-    }
-
-    if (DB_Conn === Constants.DB_CONNS_MONGO) {
-
-        result = await applicationMongoModel.createApplication(application);
-        return `New Application with Id : ${result["_id"]} created`;
-    
-    }
-    
-
-    // return `
-    // New Application with Id : ${result.pgResult.rows[0]["id"]} created in Postgres DB
-    // New Application with Id : ${result.mongoResult["_id"]} created in Mongo DB`;
-
 }
 
 async function updateApplication(id, application) {
 
     debug(`In Applications Controller - Updating Application with ID ${id}`);
 
-    if ((await applicationPGModel.getApplicationById(id)).rows.length < 1) return `Appliction with id ${id} not found`;
+    if (typeof (await getApplicationById(id)) === "string") return `Appliction with id ${id} not found`;
     
-    const validationResult = validateApp(application);
+    if (validateApp(application).error) return `Error : ${validationResult.error.details[0].message}`;
 
-    if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
-
-    result = await applicationPGModel.updateApplication(id, application);
+    result = await applicationModel.updateApplication(id, application);
 
     return `Application with Id : ${id} updated`;
 
@@ -85,14 +76,14 @@ async function deleteApplication(id) {
 
     debug(`In Applications Controller - Deleting Application with ID ${id}`);
 
-    const deletedApplication = await applicationPGModel.getApplicationById(id);
+    const deletedApplication = await getApplicationById(id);
 
-    if (deletedApplication.rows.length < 1) return `Appliction with id ${id} not found`;
+    if (typeof deletedApplication === "string") return `Appliction with id ${id} not found`;
 
-    result = await applicationPGModel.deleteApplication(id);
+    result = await applicationModel.deleteApplication(id);
 
     return `Application with Id : ${id} deleted
-    ${JSON.stringify(deletedApplication.rows[0])}`;
+    ${JSON.stringify(deletedApplication)}`;
 
 }
 

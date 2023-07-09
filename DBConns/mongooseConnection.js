@@ -11,19 +11,8 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) {
         .then(() => debug(`Connected to MongoDB at mongodb://localhost/${schemaName}`))
         .catch(err => debug(`Error : ${err}`));
 
-    const applicationSchema = new mongoose.Schema({
-        name : String,
-        description : {
-            type : String,
-            default : ""
-        }
-    });
-
-    const Application = mongoose.model('application', applicationSchema);
-
     module.exports = {
-        mongoose,
-        Application
+        mongoose
     };
 
 }
