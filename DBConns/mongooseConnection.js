@@ -21,7 +21,6 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) {
 
     const Application = mongoose.model('application', applicationSchema);
 
-        
     module.exports = {
         mongoose,
         Application
