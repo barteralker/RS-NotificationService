@@ -4,53 +4,33 @@ const routerApp = express.Router();
 routerApp.use(express.json());
 const applicationController = require('../Controllers/application');
 
-routerApp.get('/', function(req, res){
+routerApp.get('/', async (req, res) => {
 
-    ( async() => {
-
-        res.send(await applicationController.getAllApplications()); 
-
-    })();
+    res.send(await applicationController.getAllApplications()); 
 
 });
 
-routerApp.get('/:id', function(req, res){
+routerApp.get('/:id', async (req, res) => {
 
-    ( async() => {
-
-        res.send(await applicationController.getApplicationById(req.params.id)); 
-
-    })();
+    res.send(await applicationController.getApplicationById(req.params.id)); 
 
 });
 
-routerApp.post('', function(req, res){
+routerApp.post('', async (req, res) => {
 
-    ( async() => {
-
-        res.send(await applicationController.createApplication(req.body)); 
-
-    })();    
+    res.send(await applicationController.createApplication(req.body)); 
 
 });
 
-routerApp.put('/:id', function(req, res){
+routerApp.put('/:id', async (req, res) => {
 
-    ( async() => {
-
-        res.send(await applicationController.updateApplication(req.params.id, req.body)); 
-
-    })();
+    res.send(await applicationController.updateApplication(req.params.id, req.body)); 
 
 });
 
-routerApp.delete('/:id', function(req, res){
+routerApp.delete('/:id', async (req, res) => {
 
-    ( async() => {
-
-        res.send(await applicationController.deleteApplication(req.params.id)); 
-
-    })();
+    res.send(await applicationController.deleteApplication(req.params.id)); 
 
 });
 
