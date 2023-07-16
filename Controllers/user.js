@@ -2,6 +2,7 @@ const winston = require('winston');
 const DB_Conn = require('../resources/config.json').DB_CONN;
 const Constants = require('../resources/constants');
 const Joi = require('joi');
+const bcrypt = require('bcrypt');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var userModel = require('../PostgresModels/user'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var userModel = require('../MongoModels/user'); };
@@ -28,6 +29,9 @@ async function createUser(user) {
 
     const validationResult = validateUser(user);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
 
     result = await userModel.createUser(user);
 
