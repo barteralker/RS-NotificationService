@@ -2,11 +2,12 @@
 const debug = require('debug')('app:appDebugger');
 const express = require('express');
 const app = express();
-const morgan = require('morgan');
+const winston = require('winston');
 require('express-async-errors');
 
+winston.add(new winston.transports.File({ filename: './logs/logs.log' }));
+
 app.use(express.json());
-// app.use(morgan('tiny'));
 
 const Joi = require('joi');
 
