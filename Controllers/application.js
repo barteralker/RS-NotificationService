@@ -46,7 +46,7 @@ async function createApplication(application) {
 
     winston.info(`In Applications Controller - Creating New Application`);
 
-    const validationResult = validateApp(event);
+    const validationResult = validateApp(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     result = await applicationModel.createApplication(application);
@@ -62,7 +62,7 @@ async function updateApplication(id, application) {
 
     if (typeof (await getApplicationById(id)) === "string") return `Appliction with id ${id} not found`;
     
-    const validationResult = validateApp(event);
+    const validationResult = validateApp(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     await applicationModel.updateApplication(id, application);
