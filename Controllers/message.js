@@ -4,8 +4,8 @@ const DB_Conn = require('../resources/config.json').DB_CONN;
 const Constants = require('../resources/constants');
 const Joi = require('joi');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var MesageModel = require('../PostgresModels/Mesage'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var MesageModel = require('../MongoModels/Mesage'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var MesageModel = require('../PostgresModels/message'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var MesageModel = require('../MongoModels/message'); };
 
 function validateMesage(body) {
 

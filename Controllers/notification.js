@@ -4,8 +4,8 @@ const DB_Conn = require('../resources/config.json').DB_CONN;
 const Constants = require('../resources/constants');
 const Joi = require('joi');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var NotificationModel = require('../PostgresModels/Notification'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var NotificationModel = require('../MongoModels/Notification'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var NotificationModel = require('../PostgresModels/notification'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var NotificationModel = require('../MongoModels/notification'); };
 
 function validateNotification(body) {
 
