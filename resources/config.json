@@ -1,0 +1,13 @@
+{
+    "name" : "RS-NotificationService",
+    "port" : 3001,
+    "DB_CONN" : "postgres",
+    "DB_Schema" : "rs_notification_service",
+    "PG_DB_credentials" : {
+        "user": "postgres",
+        "host": "localhost",
+        "database": "postgres",
+        "password": "postgres",
+        "port": 5432
+    }
+}

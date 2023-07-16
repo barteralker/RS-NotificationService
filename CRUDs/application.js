@@ -1,93 +1,37 @@
 
 const express = require('express');
-const app = express();
-app.use(express.json());
+const routerApp = express.Router();
+routerApp.use(express.json());
+const applicationController = require('../Controllers/application');
 
-const Joi = require('joi');
+routerApp.get('/', async (req, res) => {
 
-const applications = [
-    {
-        id: 1,
-        name: "ETS",
-        description: "Employee Training System"
-    }
-];
+    res.send(await applicationController.getAllApplications()); 
 
-function validateApp(body) {
+});
 
-    const schema = Joi.object({
-        name: Joi.string().required(),
-        description: Joi.string()
-    });
+routerApp.get('/:id', async (req, res) => {
 
-    return schema.validate(body);
+    res.send(await applicationController.getApplicationById(req.params.id)); 
 
-};
+});
 
-module.exports = function(app){
+routerApp.post('', async (req, res) => {
 
-    app.get('/applications', function(req, res){
-        res.send(applications);
-    });
+    res.send(await applicationController.createApplication(req.body)); 
 
-    app.get('/applications/:id', function(req, res){
+});
 
-        if (!(applications.map((app) => app.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Application with id ${req.params.id} not found`);
-    
-        res.send(applications.find( item => item.id == req.params.id))
+routerApp.put('/:id', async (req, res) => {
 
-    });
+    res.send(await applicationController.updateApplication(req.params.id, req.body)); 
 
-    app.post('/applications', function(req, res){
-        
-        const validationResult = validateApp(req.body);
+});
 
-        if (validationResult.error) {
-            res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
-            return;
-        };
-    
-        let id = applications.map((app) => app.id).reduce((a, b) => Math.max(a, b)) + 1;
-    
-        applications.push({
-            id: id,
-            name: req.body.name,
-            description: req.body.description || ""
-        });
-    
-        res.send(`Application with id ${id} added successfully`);
-    
-    });
-    
-    app.put('/applications/:id', function(req, res){
+routerApp.delete('/:id', async (req, res) => {
 
-        if (!(applications.map((app) => app.id).includes(parseInt(req.params.id)))) return res.status(404).send(`App with id ${req.params.id} not found`);
-        
-        const validationResult = validateApp(req.body);
+    res.send(await applicationController.deleteApplication(req.params.id)); 
 
-        if (validationResult.error) {
-            res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
-            return;
-        };
-    
-        const application = applications.find(a => a.id == req.params.id);
+});
 
-        application.name = req.body.name || application.name;
-        application.description = req.body.description || application.description;
-
-        res.send(`Application with id ${req.params.id} updated`);
-    });
-    
-    app.delete('/applications/:id', function(req, res){
-
-        if (!(applications.map((app) => app.id).includes(parseInt(req.params.id)))) return res.status(404).send(`App with id ${req.params.id} not found`);
-
-        let app = applications.find( item => item.id == req.params.id);
-        let idx = applications.indexOf(app);
-        applications.splice(idx, 1);
-    
-        res.send(app);
-
-    });
-
-}
+module.exports = routerApp;

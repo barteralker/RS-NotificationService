@@ -1,97 +1,37 @@
 
 const express = require('express');
-const app = express();
-app.use(express.json());
+const routerApp = express.Router();
+routerApp.use(express.json());
+const eventController = require('../Controllers/event');
 
-const Joi = require('joi');
+routerApp.get('/', async (req, res) => {
 
-const events = [
-    {
-        id: 1,
-        application_id: 1,
-        event_name: "Training Assigned",
-        description: "Employee Training System"
-    }
-];
+    res.send(await eventController.getAllEvents()); 
 
-function validateEvent(body) {
+});
 
-    const schema = Joi.object({
-        application_id: Joi.number().integer().min(1).required(),
-        event_name: Joi.string().min(3).required(),
-        description: Joi.string().min(0)
-    });
+routerApp.get('/:id', async (req, res) => {
 
-    return schema.validate(body);
+    res.send(await eventController.getEventById(req.params.id)); 
 
-};
+});
 
-module.exports = function(app){
+routerApp.post('', async (req, res) => {
 
-    app.get('/events', function(req, res){
-        res.send(events);
-    });
+    res.send(await eventController.createEvent(req.body)); 
 
-    app.get('/events/:id', function(req, res){
+});
 
-        if (!(events.map((e) => e.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Event with id ${req.params.id} not found`);
-    
-        res.send(events.find( item => item.id == req.params.id))
+routerApp.put('/:id', async (req, res) => {
 
-    });
+    res.send(await eventController.updateEvent(req.params.id, req.body)); 
 
-    app.post('/events', function(req, res){
-        
-        const validationResult = validateEvent(req.body);
+});
 
-        if (validationResult.error) {
-            res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
-            return;
-        };
-    
-        let id = events.map((e) => e.id).reduce((a, b) => Math.max(a, b)) + 1;
-    
-        events.push({
-            id: id,
-            application_id: req.body.application_id,
-            event_name: req.body.event_name,
-            description: req.body.description || ""
-        });
-    
-        res.send(`Event with id ${id} added successfully`);
-    
-    });
-    
-    app.put('/events/:id', function(req, res){
+routerApp.delete('/:id', async (req, res) => {
 
-        if (!(events.map((e) => e.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Event with id ${req.params.id} not found`);
-        
-        const validationResult = validateEvent(req.body);
+    res.send(await eventController.deleteEvent(req.params.id)); 
 
-        if (validationResult.error) {
-            res.status(400).send(`Error : ${validationResult.error.details[0].message}`)
-            return;
-        };
-    
-        const event = events.find(a => a.id == req.params.id);
+});
 
-        event.application_id = req.body.application_id || event.application_id;
-        event.event_name = req.body.event_name || event.event_name;
-        event.description = req.body.description || event.description;
-
-        res.send(`Event with id ${req.params.id} updated`);
-    });
-    
-    app.delete('/events/:id', function(req, res){
-
-        if (!(events.map((e) => e.id).includes(parseInt(req.params.id)))) return res.status(404).send(`Event with id ${req.params.id} not found`);
-
-        let event = events.find( item => item.id == req.params.id);
-        let idx = events.indexOf(event);
-        events.splice(idx, 1);
-    
-        res.send(event);
-
-    });
-
-}
+module.exports = routerApp;

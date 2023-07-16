@@ -14,11 +14,13 @@
     "debug": "^4.3.4",
     "express": "^4.18.2",
     "joi": "^17.9.2",
-    "morgan": "^1.10.0"
+    "mongoose": "^7.3.2",
+    "morgan": "^1.10.0",
+    "pg": "^8.11.1"
   },
   "devDependencies": {
-    "eslint": "^8.44.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.27.5"
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.26.0"
   }
 }
