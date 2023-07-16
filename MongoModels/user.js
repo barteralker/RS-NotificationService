@@ -8,7 +8,9 @@ async function createUser(user) {
 
     const mongoUser = new User({
         name : user.name,
-        description: user.description
+        email: user.email,
+        password: user.password,
+        application_id: user.application_id
     });    
 
     return (await mongoUser.save());
