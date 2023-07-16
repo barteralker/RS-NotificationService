@@ -1,13 +1,15 @@
 
-const GET_ALL_NOTIFICATIONS = "";
+const schema = require('../resources/config.json').DB_Schema;
 
-const GET_NOTIFICATION_BY_ID = "";
+const GET_ALL_NOTIFICATIONS = `SELECT * FROM ${schema}.notification`;
 
-const CREATE_NOTIFICATION = "";
+const GET_NOTIFICATION_BY_ID = `SELECT * FROM ${schema}.notification WHERE id = $1`;
 
-const UPDATE_NOTIFICATION = "";
+const CREATE_NOTIFICATION = `INSERT INTO ${schema}.notification (event_id, name, template_subject, template_body) VALUES ($1, $2, $3, $4) RETURNING id`;
 
-const DELETE_NOTIFICATION = "";
+const UPDATE_NOTIFICATION = `UPDATE ${schema}.notification SET event_id = $1, name = $2, template_subject = $3, template_body = $4 WHERE id = $5`;
+
+const DELETE_NOTIFICATION = `DELETE FROM ${schema}.notification WHERE id = $1`;
 
 module.exports = {
     GET_ALL_NOTIFICATIONS,

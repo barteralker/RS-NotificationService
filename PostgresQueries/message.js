@@ -1,13 +1,15 @@
 
-const GET_ALL_MESSAGES = "";
+const schema = require('../resources/config.json').DB_Schema;
 
-const GET_MESSAGE_BY_ID = "";
+const GET_ALL_MESSAGES = `SELECT * FROM ${schema}.message`;
 
-const CREATE_MESSAGE = "";
+const GET_MESSAGE_BY_ID = `SELECT * FROM ${schema}.message WHERE id = $1`;
 
-const UPDATE_MESSAGE = "";
+const CREATE_MESSAGE = `INSERT INTO ${schema}.message (message_text, notification_type, timestamp) VALUES ($1, $2, $3) RETURNING id`;
 
-const DELETE_MESSAGE = "";
+const UPDATE_MESSAGE = `UPDATE ${schema}.message SET message_text = $1, notification_type = $2, timestamp = $3 WHERE id = $4`;
+
+const DELETE_MESSAGE = `DELETE FROM ${schema}.message WHERE id = $1`;
 
 module.exports = {
     GET_ALL_MESSAGES,
