@@ -4,14 +4,6 @@ const app = express();
 const winston = require('winston');
 require('express-async-errors');
 
-process.on('uncaughtException', (exp) => {
-    winston.error(exp.message, exp);
-})
-
-winston.add(new winston.transports.File({ filename: './logs/logs.log' }));
-
-app.use(express.json());
-
 const Joi = require('joi');
 
 const application = require('./CRUDs/application.js');
@@ -20,6 +12,20 @@ const notification = require('./CRUDs/notification.js');
 const message = require('./CRUDs/message.js');
 
 const errorHandler = require('./Middleware/ErrorHandler.js')
+
+winston.add(new winston.transports.File({ filename: './logs/logs.log' }));
+
+process.on('uncaughtException', (exp) => {
+    winston.error('UNCAUGHT EXCEPTION');
+    winston.error(exp.message, exp);
+});
+
+process.on('unhandledRejection', (exp) => {
+    winston.error('UNHADLED PROMISE REJECTION');
+    winston.error(exp.message, exp);
+});
+
+app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('Welcome to Notification Service');
