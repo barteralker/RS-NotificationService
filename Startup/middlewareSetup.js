@@ -5,6 +5,7 @@ const application = require('../CRUDs/application.js');
 const event = require('../CRUDs/event.js');
 const notification = require('../CRUDs/notification.js');
 const message = require('../CRUDs/message.js');
+const user = require('../CRUDs/user.js');
 
 const errorHandler = require('../Middleware/ErrorHandler.js')
 
@@ -20,6 +21,7 @@ module.exports = (app) => {
     app.use('/events', event);
     app.use('/notifications', notification);
     app.use('/messages', message);
+    app.use('/users', user);
     
     app.use(errorHandler);
     
