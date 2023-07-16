@@ -1,9 +1,12 @@
 
-const debug = require('debug')('app:appDebugger');
 const express = require('express');
 const app = express();
 const winston = require('winston');
 require('express-async-errors');
+
+process.on('uncaughtException', (exp) => {
+    winston.error(exp.message, exp);
+})
 
 winston.add(new winston.transports.File({ filename: './logs/logs.log' }));
 
@@ -30,7 +33,7 @@ app.use('/messages', message);
 app.use(errorHandler);
 
 const DB_Conn = require('./resources/config.json').DB_CONN;
-debug(`Connecting to ${DB_Conn} DB..!!`)
+winston.info(`Connecting to ${DB_Conn} DB..!!, ${new Date().toUTCString()}`)
 
 const port = process.env.port || require('./resources/config.json').port;
-app.listen(port, () => debug(`Listening on Port ${port} !`));
+app.listen(port, () => winston.info(`Listening on Port ${port} !`));

@@ -1,5 +1,5 @@
 
-const debug = require('debug')('app:appDebugger');
+const winston = require('winston');
 const DB_Conn = require('../resources/config.json').DB_CONN;
 const Constants = require('../resources/constants');
 const Joi = require('joi');
@@ -9,7 +9,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../M
 
 function validateApp(body) {
 
-    debug('Validating Application Input');
+    winston.info('Validating Application Input');
     const schema = Joi.object({
         
         name: Joi.string().required(),
@@ -22,7 +22,7 @@ function validateApp(body) {
 
 async function getAllApplications() {
 
-    debug(`In Applications Controller - Getting All Applications`);
+    winston.info(`In Applications Controller - Getting All Applications`);
 
     result = await applicationModel.getAllApplications();
 
@@ -33,7 +33,7 @@ async function getAllApplications() {
 
 async function getApplicationById(id) {
 
-    debug(`In Applications Controller - Getting Application with ID ${id}`);
+    winston.info(`In Applications Controller - Getting Application with ID ${id}`);
 
     result = await applicationModel.getApplicationById(id);
 
@@ -44,7 +44,7 @@ async function getApplicationById(id) {
 
 async function createApplication(application) {
 
-    debug(`In Applications Controller - Creating New Application`);
+    winston.info(`In Applications Controller - Creating New Application`);
 
     const validationResult = validateApp(event);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
@@ -58,7 +58,7 @@ async function createApplication(application) {
 
 async function updateApplication(id, application) {
 
-    debug(`In Applications Controller - Updating Application with ID ${id}`);
+    winston.info(`In Applications Controller - Updating Application with ID ${id}`);
 
     if (typeof (await getApplicationById(id)) === "string") return `Appliction with id ${id} not found`;
     
@@ -73,7 +73,7 @@ async function updateApplication(id, application) {
 
 async function deleteApplication(id) {
 
-    debug(`In Applications Controller - Deleting Application with ID ${id}`);
+    winston.info(`In Applications Controller - Deleting Application with ID ${id}`);
 
     const deletedApplication = await getApplicationById(id);
 

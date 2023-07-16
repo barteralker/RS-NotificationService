@@ -1,12 +1,12 @@
 
-const debug = require('debug')('app:appDebugger');
+const winston = require('winston');
 const pg = require('../DBConns/pgConnection');
 const Application = require('../MongooseCollections/application').Application;
 const queries = require('../PostgresQueries/application');
 
 async function getAllApplications() {
 
-    debug(`In Applications Model - Getting All Applications`);
+    winston.info(`In Applications Model - Getting All Applications`);
 
     return (await Application.find());
 
@@ -14,7 +14,7 @@ async function getAllApplications() {
 
 async function getApplicationById(id) {
 
-    debug(`In Applications Model - Getting Application with ID ${id}`);
+    winston.info(`In Applications Model - Getting Application with ID ${id}`);
 
     return (await Application.findById(id));
 
@@ -22,7 +22,7 @@ async function getApplicationById(id) {
 
 async function createApplication(application) {
 
-    debug(`In Applications Model - Creating New Application`);
+    winston.info(`In Applications Model - Creating New Application`);
 
     const mongoApplication = new Application({
         name : application.name,
@@ -35,7 +35,7 @@ async function createApplication(application) {
 
 async function updateApplication(id, application) {
 
-    debug(`In Applications Model - Updating Application with ID : ${id}`);
+    winston.info(`In Applications Model - Updating Application with ID : ${id}`);
 
     return (await Application.findByIdAndUpdate(id, {
         name : application.name,
@@ -46,7 +46,7 @@ async function updateApplication(id, application) {
 
 async function deleteApplication(id) {
 
-    debug(`In Applications Model - Deleting Application with ID : ${id}`);
+    winston.info(`In Applications Model - Deleting Application with ID : ${id}`);
 
     return (await Application.findByIdAndDelete(id));
 
