@@ -16,19 +16,19 @@ routerApp.get('/:id', async (req, res) => {
 
 });
 
-routerApp.post('', async (req, res) => {
+routerApp.post('', auth, async (req, res) => {
 
     res.send(await messageController.createMessage(req.body)); 
 
 });
 
-routerApp.put('/:id', async (req, res) => {
+routerApp.put('/:id', auth, async (req, res) => {
 
     res.send(await messageController.updateMessage(req.params.id, req.body)); 
 
 });
 
-routerApp.delete('/:id', async (req, res) => {
+routerApp.delete('/:id', auth, async (req, res) => {
 
     res.send(await messageController.deleteMessage(req.params.id)); 
 
