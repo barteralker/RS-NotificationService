@@ -17,6 +17,20 @@ async function createUser(user) {
 
 }
 
+async function getUser(user) {
+
+    winston.info(`In Users Model - Checking if User exists.`);
+
+    const result = User.find({
+        email : user.email,
+        application_id : user.application_id
+    })
+
+    return result;
+
+}
+
 module.exports = {
-    createUser
+    createUser,
+    getUser
 }

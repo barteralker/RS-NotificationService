@@ -13,7 +13,7 @@ function validateUser(body) {
     const schema = Joi.object({
         
         name: Joi.string().required(),
-        email: Joi.string().required(),
+        email: Joi.string().required().min(10),
         password: Joi.string().required().min(8),
         application_id: Joi.number().required().min(1)
 
@@ -30,16 +30,47 @@ async function createUser(user) {
     const validationResult = validateUser(user);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
+    const userExists = await checkUserExistence(user);
 
-    result = await userModel.createUser(user);
+    if (!userExists) {
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return `New User with Id : ${result.rows[0]["id"]} created`;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return `New User with Id : ${result["_id"]} created`;
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+
+        result = await userModel.createUser(user);
+
+        if (DB_Conn === Constants.DB_CONNS_PG) return `New User with Id : ${result.rows[0]["id"]} created`;
+        if (DB_Conn === Constants.DB_CONNS_MONGO) return `New User with Id : ${result["_id"]} created`;
+    
+    }
+
+    else return 'User already registered'
     
 }
 
+async function checkUserExistence(user) {
+
+    winston.info(`In Users Controller - Checking if User exists`);
+
+    result = await userModel.getUser(user);
+    
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows.length > 0;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result.length > 0;
+
+}
+
+async function getUser(user) {
+
+    winston.info(`In Users Controller - Getting User`);
+
+    result = await userModel.getUser(user);
+    
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+
+}
+
 module.exports = {
-    createUser
+    createUser,
+    getUser
 }
