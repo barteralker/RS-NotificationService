@@ -3,6 +3,7 @@ const express = require('express');
 const routerApp = express.Router();
 routerApp.use(express.json());
 const messageController = require('../Controllers/message');
+const auth = require('../Middleware/Authenticator');
 
 routerApp.get('/', async (req, res) => {
 

@@ -3,6 +3,7 @@ const express = require('express');
 const routerApp = express.Router();
 routerApp.use(express.json());
 const notificationController = require('../Controllers/notification');
+const auth = require('../Middleware/Authenticator');
 
 routerApp.get('/', async (req, res) => {
 
