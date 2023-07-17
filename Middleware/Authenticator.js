@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
 
     catch (err) {
         winston.info('Invalid Token Found')
-        res.status(400).send('Invalid Token');
+        res.status(401).send('Invalid Token');
     }
 
 }
