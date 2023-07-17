@@ -9,5 +9,6 @@
         "database": "postgres",
         "password": "postgres",
         "port": 5432
-    }
+    },
+    "jwtPrivateKey" : ""
 }

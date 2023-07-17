@@ -1,12 +1,12 @@
 
-const debug = require('debug')('app:appDebugger');
+const winston = require('winston');
 const pg = require('../DBConns/pgConnection');
 const Notification = require('../MongooseCollections/notification').Notification;
 const queries = require('../PostgresQueries/notification');
 
 async function getAllNotifications() {
 
-    debug(`In Notifications Model - Getting All Notifications`);
+    winston.info(`In Notifications Model - Getting All Notifications`);
 
     return (await Notification.find());
 
@@ -14,7 +14,7 @@ async function getAllNotifications() {
 
 async function getNotificationById(id) {
 
-    debug(`In Notifications Model - Getting Notification with ID ${id}`);
+    winston.info(`In Notifications Model - Getting Notification with ID ${id}`);
 
     return (await Notification.findById(id));
 
@@ -22,7 +22,7 @@ async function getNotificationById(id) {
 
 async function createNotification(notification) {
 
-    debug(`In Notifications Model - Creating New Notification`);
+    winston.info(`In Notifications Model - Creating New Notification`);
 
     const mongoNotification = new Notification({
         name : notification.name,
@@ -38,7 +38,7 @@ async function createNotification(notification) {
 
 async function updateNotification(id, notification) {
 
-    debug(`In Notifications Model - Updating Notification with ID : ${id}`);
+    winston.info(`In Notifications Model - Updating Notification with ID : ${id}`);
 
     return (await Notification.findByIdAndUpdate(id, {
         notificationText : notification.notificationText,
@@ -49,7 +49,7 @@ async function updateNotification(id, notification) {
 
 async function deleteNotification(id) {
 
-    debug(`In Notifications Model - Deleting Notification with ID : ${id}`);
+    winston.info(`In Notifications Model - Deleting Notification with ID : ${id}`);
 
     return (await Notification.findByIdAndDelete(id));
 

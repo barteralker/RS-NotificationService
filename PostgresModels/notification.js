@@ -1,16 +1,16 @@
 
-const debug = require('debug')('app:appDebugger');
+const winston = require('winston');
 const pg = require('../DBConns/pgConnection');
 const queries = require('../PostgresQueries/notification');
 
 async function getAllNotifications() {
 
-    debug(`In Notifications Model - Getting All Notifications`);
+    winston.info(`In Notifications Model - Getting All Notifications`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.GET_ALL_NOTIFICATIONS;
-    debug(`Running Postgres query : ${querySQl}`);
+    winston.info(`Running Postgres query : ${querySQl}`);
 
     const result = await pool.query(querySQl);
 
@@ -22,14 +22,14 @@ async function getAllNotifications() {
 
 async function getNotificationById(id) {
 
-    debug(`In Notifications Model - Getting Notification with ID ${id}`);
+    winston.info(`In Notifications Model - Getting Notification with ID ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.GET_NOTIFICATION_BY_ID;
     const values = [id];
 
-    debug(`Running Postgres query : ${querySQl}`);
+    winston.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();
@@ -40,14 +40,14 @@ async function getNotificationById(id) {
 
 async function createNotification(notification) {
 
-    debug(`In Notifications Model - Creating New Notification`);
+    winston.info(`In Notifications Model - Creating New Notification`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.CREATE_NOTIFICATION;
     const values = [notification.event_id, notification.name, template_subject, template_body];
 
-    debug(`Running Postgres query : ${querySQl}`);
+    winston.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();
@@ -58,14 +58,14 @@ async function createNotification(notification) {
 
 async function updateNotification(id, notification) {
 
-    debug(`In Notifications Model - Updating Notification with ID : ${id}`);
+    winston.info(`In Notifications Model - Updating Notification with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.UPDATE_NOTIFICATION;
     const values = [notification.event_id, notification.name, template_subject, template_body, id];
 
-    debug(`Running Postgres query : ${querySQl}`);
+    winston.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();   
@@ -76,14 +76,14 @@ async function updateNotification(id, notification) {
 
 async function deleteNotification(id) {
 
-    debug(`In Notifications Model - Deleting Notification with ID : ${id}`);
+    winston.info(`In Notifications Model - Deleting Notification with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.DELETE_NOTIFICATION;
     const values = [id];
 
-    debug(`Running Postgres query : ${querySQl}`);
+    winston.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();   

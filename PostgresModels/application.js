@@ -1,11 +1,11 @@
 
-const debug = require('debug')('app:appDebugger');
+const winston = require('winston');
 const pg = require('../DBConns/pgConnection');
 const queries = require('../PostgresQueries/application');
 
 async function getAllApplications() {
 
-    debug(`In Applications Model - Getting All Applications`);
+    winston.info(`In Applications Model - Getting All Applications`);
 
     pool = new pg.Pool(pg.credentials);
     const result = await pool.query(queries.GET_ALL_APPLICATIONS);
@@ -17,7 +17,7 @@ async function getAllApplications() {
 
 async function getApplicationById(id) {
 
-    debug(`In Applications Model - Getting Application with ID ${id}`);
+    winston.info(`In Applications Model - Getting Application with ID ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -34,7 +34,7 @@ async function getApplicationById(id) {
 
 async function createApplication(application) {
 
-    debug(`In Applications Model - Creating New Application`);
+    winston.info(`In Applications Model - Creating New Application`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -51,7 +51,7 @@ async function createApplication(application) {
 
 async function updateApplication(id, application) {
 
-    debug(`In Applications Model - Updating Application with ID : ${id}`);
+    winston.info(`In Applications Model - Updating Application with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -68,7 +68,7 @@ async function updateApplication(id, application) {
 
 async function deleteApplication(id) {
 
-    debug(`In Applications Model - Deleting Application with ID : ${id}`);
+    winston.info(`In Applications Model - Deleting Application with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 

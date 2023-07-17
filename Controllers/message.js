@@ -1,7 +1,7 @@
 
-const debug = require('debug')('app:appDebugger');
-const DB_Conn = require('../resources/config.json').DB_CONN;
-const Constants = require('../resources/constants');
+const winston = require('winston');
+const DB_Conn = require('../config/default.json').DB_CONN;
+const Constants = require('../config/constants');
 const Joi = require('joi');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var MesageModel = require('../PostgresModels/message'); };
@@ -9,7 +9,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var MesageModel = require('../MongoM
 
 function validateMesage(body) {
 
-    debug('Validating Mesage Input');
+    winston.info('Validating Mesage Input');
     const schema = Joi.object({
         
         notification_type: Joi.number().integer().min(1).required(),
@@ -23,7 +23,7 @@ function validateMesage(body) {
 
 async function getAllMesages() {
 
-    debug(`In Mesages Controller - Getting All Mesages`);
+    winston.info(`In Mesages Controller - Getting All Mesages`);
 
     result = await MesageModel.getAllMesages();
 
@@ -34,7 +34,7 @@ async function getAllMesages() {
 
 async function getMesageById(id) {
 
-    debug(`In Mesages Controller - Getting Mesage with ID ${id}`);
+    winston.info(`In Mesages Controller - Getting Mesage with ID ${id}`);
 
     result = await MesageModel.getMesageById(id);
 
@@ -45,7 +45,7 @@ async function getMesageById(id) {
 
 async function createMesage(Mesage) {
 
-    debug(`In Mesages Controller - Creating New Mesage`);
+    winston.info(`In Mesages Controller - Creating New Mesage`);
 
     const validationResult = validateMesage(Mesage);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
@@ -59,7 +59,7 @@ async function createMesage(Mesage) {
 
 async function updateMesage(id, Mesage) {
 
-    debug(`In Mesages Controller - Updating Mesage with ID ${id}`);
+    winston.info(`In Mesages Controller - Updating Mesage with ID ${id}`);
 
     if (typeof (await getMesageById(id)) === "string") return `Mesage with id ${id} not found`;
     
@@ -74,7 +74,7 @@ async function updateMesage(id, Mesage) {
 
 async function deleteMesage(id) {
 
-    debug(`In Mesages Controller - Deleting Mesage with ID ${id}`);
+    winston.info(`In Mesages Controller - Deleting Mesage with ID ${id}`);
 
     const deletedMesage = await getMesageById(id);
 

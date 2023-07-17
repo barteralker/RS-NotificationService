@@ -1,7 +1,7 @@
 
-const debug = require('debug')('app:appDebugger');
-const DB_Conn = require('../resources/config.json').DB_CONN;
-const Constants = require('../resources/constants');
+const winston = require('winston');
+const DB_Conn = require('../config/default.json').DB_CONN;
+const Constants = require('../config/constants');
 const Joi = require('joi');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var eventModel = require('../PostgresModels/event'); };
@@ -9,7 +9,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../MongoMo
 
 function validateEvent(body) {
 
-    debug('Validating Event Input');
+    winston.info('Validating Event Input');
     const schema = Joi.object({
         
         application_id: Joi.number().integer().min(1).required(),
@@ -23,7 +23,7 @@ function validateEvent(body) {
 
 async function getAllEvents() {
 
-    debug(`In Events Controller - Getting All Events`);
+    winston.info(`In Events Controller - Getting All Events`);
 
     result = await eventModel.getAllEvents();
 
@@ -34,7 +34,7 @@ async function getAllEvents() {
 
 async function getEventById(id) {
 
-    debug(`In Events Controller - Getting Event with ID ${id}`);
+    winston.info(`In Events Controller - Getting Event with ID ${id}`);
 
     result = await eventModel.getEventById(id);
 
@@ -45,7 +45,7 @@ async function getEventById(id) {
 
 async function createEvent(event) {
 
-    debug(`In Events Controller - Creating New Event`);
+    winston.info(`In Events Controller - Creating New Event`);
 
     const validationResult = validateEvent(event);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
@@ -59,7 +59,7 @@ async function createEvent(event) {
 
 async function updateEvent(id, event) {
 
-    debug(`In Events Controller - Updating Event with ID ${id}`);
+    winston.info(`In Events Controller - Updating Event with ID ${id}`);
 
     if (typeof (await getEventById(id)) === "string") return `Event with id ${id} not found`;
     
@@ -74,7 +74,7 @@ async function updateEvent(id, event) {
 
 async function deleteEvent(id) {
 
-    debug(`In Events Controller - Deleting Event with ID ${id}`);
+    winston.info(`In Events Controller - Deleting Event with ID ${id}`);
 
     const deletedEvent = await getEventById(id);
 

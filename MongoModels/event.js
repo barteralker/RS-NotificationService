@@ -1,12 +1,12 @@
 
-const debug = require('debug')('app:appDebugger');
+const winston = require('winston');
 const pg = require('../DBConns/pgConnection');
 const Event = require('../MongooseCollections/event').Event;
 const queries = require('../PostgresQueries/event');
 
 async function getAllEvents() {
 
-    debug(`In Events Model - Getting All Events`);
+    winston.info(`In Events Model - Getting All Events`);
 
     return (await Event.find());
 
@@ -14,7 +14,7 @@ async function getAllEvents() {
 
 async function getEventById(id) {
 
-    debug(`In Events Model - Getting Event with ID ${id}`);
+    winston.info(`In Events Model - Getting Event with ID ${id}`);
 
     return (await Event.findById(id));
 
@@ -22,7 +22,7 @@ async function getEventById(id) {
 
 async function createEvent(event) {
 
-    debug(`In Events Model - Creating New Event`);
+    winston.info(`In Events Model - Creating New Event`);
 
     const mongoEvent = new Event({
         name : event.name,
@@ -36,7 +36,7 @@ async function createEvent(event) {
 
 async function updateEvent(id, event) {
 
-    debug(`In Events Model - Updating Event with ID : ${id}`);
+    winston.info(`In Events Model - Updating Event with ID : ${id}`);
 
     return (await Event.findByIdAndUpdate(id, {
         name : event.name,
@@ -48,7 +48,7 @@ async function updateEvent(id, event) {
 
 async function deleteEvent(id) {
 
-    debug(`In Events Model - Deleting Event with ID : ${id}`);
+    winston.info(`In Events Model - Deleting Event with ID : ${id}`);
 
     return (await Event.findByIdAndDelete(id));
 

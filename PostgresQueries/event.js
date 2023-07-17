@@ -1,5 +1,5 @@
 
-const schema = require('../resources/config.json').DB_Schema;
+const schema = require('../config/default.json').DB_Schema;
 
 const GET_ALL_EVENTS = `SELECT * FROM ${schema}.event`;
 
