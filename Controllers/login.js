@@ -1,9 +1,11 @@
 
 const winston = require('winston');
-const DB_Conn = require('../resources/config.json').DB_CONN;
-const Constants = require('../resources/constants');
+const DB_Conn = require('../config/default.json').DB_CONN;
+const Constants = require('../config/constants');
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { 
     var userModel = require('../PostgresModels/user'); 
@@ -60,7 +62,11 @@ async function login(user) {
 
     loginModel.createLogin(userObj.id)
 
-    return 'login'
+    const userJwt = jwt.sign({
+        user_id: userObj.id
+    }, config.get('jwtPrivateKey'));
+
+    return userJwt;
     
 }
 

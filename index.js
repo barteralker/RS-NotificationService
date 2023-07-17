@@ -4,8 +4,9 @@ const app = express();
 const winston = require('winston');
 
 require('express-async-errors');
-require('./Startup/middlewareSetup')(app);
 require('./Startup/loggingSetup')(winston);
+require('./Startup/middlewareSetup')(app);
+require('./Startup/jwtSetup')();
 
-const port = process.env.port || require('./resources/config.json').port;
+const port = process.env.port || require('./config/default.json').port;
 app.listen(port, () => winston.info(`Listening on Port ${port} !`));
