@@ -3,8 +3,9 @@ const express = require('express');
 const routerApp = express.Router();
 routerApp.use(express.json());
 const loginController = require('../Controllers/login');
+const log = require('../Middleware/Logger');
 
-routerApp.post('', async (req, res) => {
+routerApp.post('', log, async (req, res) => {
 
     res.send(await loginController.login(req.body)); 
 

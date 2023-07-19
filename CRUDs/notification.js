@@ -4,32 +4,33 @@ const routerApp = express.Router();
 routerApp.use(express.json());
 const notificationController = require('../Controllers/notification');
 const auth = require('../Middleware/Authenticator');
+const log = require('../Middleware/Logger');
 
-routerApp.get('/', async (req, res) => {
+routerApp.get('/', log, async (req, res) => {
 
     res.send(await notificationController.getAllNotifications()); 
 
 });
 
-routerApp.get('/:id', async (req, res) => {
+routerApp.get('/:id', log, async (req, res) => {
 
     res.send(await notificationController.getNotificationById(req.params.id)); 
 
 });
 
-routerApp.post('', auth, async (req, res) => {
+routerApp.post('', [log, auth], async (req, res) => {
 
     res.send(await notificationController.createNotification(req.body)); 
 
 });
 
-routerApp.put('/:id', auth, async (req, res) => {
+routerApp.put('/:id', [log, auth], async (req, res) => {
 
     res.send(await notificationController.updateNotification(req.params.id, req.body)); 
 
 });
 
-routerApp.delete('/:id', auth, async (req, res) => {
+routerApp.delete('/:id', [log, auth], async (req, res) => {
 
     res.send(await notificationController.deleteNotification(req.params.id)); 
 

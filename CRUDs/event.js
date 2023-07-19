@@ -4,32 +4,33 @@ const routerApp = express.Router();
 routerApp.use(express.json());
 const eventController = require('../Controllers/event');
 const auth = require('../Middleware/Authenticator');
+const log = require('../Middleware/Logger');
 
-routerApp.get('/', async (req, res) => {
+routerApp.get('/', log, async (req, res) => {
 
     res.send(await eventController.getAllEvents()); 
 
 });
 
-routerApp.get('/:id', async (req, res) => {
+routerApp.get('/:id', log, async (req, res) => {
 
     res.send(await eventController.getEventById(req.params.id)); 
 
 });
 
-routerApp.post('', auth, async (req, res) => {
+routerApp.post('', [log, auth], async (req, res) => {
 
     res.send(await eventController.createEvent(req.body)); 
 
 });
 
-routerApp.put('/:id', auth, async (req, res) => {
+routerApp.put('/:id', [log, auth], async (req, res) => {
 
     res.send(await eventController.updateEvent(req.params.id, req.body)); 
 
 });
 
-routerApp.delete('/:id', auth, async (req, res) => {
+routerApp.delete('/:id', [log, auth], async (req, res) => {
 
     res.send(await eventController.deleteEvent(req.params.id)); 
 
