@@ -1,7 +1,7 @@
 {
     "name" : "RS-NotificationService",
     "port" : 3001,
-    "DB_CONN" : "postgres",
+    "DB_CONN" : "mongo",
     "DB_Schema" : "rs_notification_service",
     "PG_DB_credentials" : {
         "user": "postgres",

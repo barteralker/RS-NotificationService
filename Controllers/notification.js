@@ -3,6 +3,8 @@ const winston = require('winston');
 const DB_Conn = require('../config/default.json').DB_CONN;
 const Constants = require('../config/constants');
 const Joi = require('joi');
+const tags = require('./tag');
+const notificationParser = require('../Middleware/NotificationParser');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var NotificationModel = require('../PostgresModels/notification'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var NotificationModel = require('../MongoModels/notification'); };
@@ -44,30 +46,32 @@ async function getNotificationById(id) {
 
 }
 
-async function createNotification(Notification) {
+async function createNotification(notification) {
 
     winston.info(`In Notifications Controller - Creating New Notification`);
 
-    const validationResult = validateNotification(Notification);
+    const validationResult = validateNotification(notification);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    result = await NotificationModel.createNotification(Notification);
+    await tags.createTags(notificationParser.parseForTags(notification.template_body));
+
+    result = await NotificationModel.createNotification(notification);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return `New Notification with Id : ${result.rows[0]["id"]} created`;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return `New Notification with Id : ${result["_id"]} created`;
     
 }
 
-async function updateNotification(id, Notification) {
+async function updateNotification(id, notification) {
 
     winston.info(`In Notifications Controller - Updating Notification with ID ${id}`);
 
     if (typeof (await getNotificationById(id)) === "string") return `Notification with id ${id} not found`;
     
-    const validationResult = validateNotification(Notification);
+    const validationResult = validateNotification(notification);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    await NotificationModel.updateNotification(id, Notification);
+    await NotificationModel.updateNotification(id, notification);
 
     return `Notification with Id : ${id} updated`;
 
@@ -88,10 +92,19 @@ async function deleteNotification(id) {
 
 }
 
+async function sendNewNotification(notification) {
+
+    console.log('sent');
+
+    return true;
+
+}
+
 module.exports = {
     getAllNotifications,
     getNotificationById,
     createNotification,
     updateNotification,
-    deleteNotification
+    deleteNotification,
+    sendNewNotification
 }

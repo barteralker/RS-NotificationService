@@ -45,7 +45,7 @@ async function createNotification(notification) {
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.CREATE_NOTIFICATION;
-    const values = [notification.event_id, notification.name, template_subject, template_body];
+    const values = [notification.event_id, notification.name, notification.template_subject, notification.template_body];
 
     winston.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
@@ -63,7 +63,7 @@ async function updateNotification(id, notification) {
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.UPDATE_NOTIFICATION;
-    const values = [notification.event_id, notification.name, template_subject, template_body, id];
+    const values = [notification.event_id, notification.name, notification.template_subject, notification.template_body, id];
 
     winston.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
