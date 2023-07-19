@@ -1,8 +1,6 @@
 
 const winston = require('winston');
-const pg = require('../DBConns/pgConnection');
 const Event = require('../MongooseCollections/event').Event;
-const queries = require('../PostgresQueries/event');
 
 async function getAllEvents() {
 

@@ -1,8 +1,6 @@
 
 const winston = require('winston');
-const pg = require('../DBConns/pgConnection');
 const Notification = require('../MongooseCollections/notification').Notification;
-const queries = require('../PostgresQueries/notification');
 
 async function getAllNotifications() {
 

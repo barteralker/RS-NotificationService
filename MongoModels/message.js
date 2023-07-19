@@ -1,8 +1,6 @@
 
 const winston = require('winston');
-const pg = require('../DBConns/pgConnection');
 const Message = require('../MongooseCollections/message').Message;
-const queries = require('../PostgresQueries/message');
 
 async function getAllMessages() {
 
