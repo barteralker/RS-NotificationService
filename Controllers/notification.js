@@ -3,24 +3,41 @@ const winston = require('winston');
 const DB_Conn = require('../config/default.json').DB_CONN;
 const Constants = require('../config/constants');
 const Joi = require('joi');
-const tags = require('./tag');
+const tagController = require('./tag');
+const messageController = require('./message');
 const notificationParser = require('../Middleware/NotificationParser');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var NotificationModel = require('../PostgresModels/notification'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var NotificationModel = require('../MongoModels/notification'); };
 
-function validateNotification(body) {
+function validateNotification(body, validator) {
 
-    winston.info('Validating Notification Input');
-    const schema = Joi.object({
-        
-        event_id: Joi.number().integer().min(1).required(),
-        name: Joi.string().required(),
-        template_subject: Joi.string().required(),
-        template_body: Joi.string().required()
-    });
+    if (validator === 'newTemplate') {
+        winston.info('Validating Notification Input');
+        const schema = Joi.object({
+            
+            event_id: Joi.number().integer().min(1).required(),
+            name: Joi.string().required(),
+            template_subject: Joi.string().required(),
+            template_body: Joi.string().required()
 
-    return schema.validate(body);
+        });
+
+        return schema.validate(body);
+    }
+
+    if (validator === 'newNotification') {
+        winston.info('Validating New Notification Input');
+        const schema = Joi.object({
+            
+            notification_type: Joi.number().integer().min(1).required(),
+            tags: Joi.object(),
+            receiver_email: Joi.string().required().min(10),
+
+        });
+
+        return schema.validate(body);
+    }
 
 };
 
@@ -50,10 +67,10 @@ async function createNotification(notification) {
 
     winston.info(`In Notifications Controller - Creating New Notification`);
 
-    const validationResult = validateNotification(notification);
+    const validationResult = validateNotification(notification, 'newTemplate');
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    await tags.createTags(notificationParser.parseForTags(notification.template_body));
+    await tagController.createTags(notificationParser.parseForTags(notification.template_body, true));
 
     result = await NotificationModel.createNotification(notification);
 
@@ -68,7 +85,7 @@ async function updateNotification(id, notification) {
 
     if (typeof (await getNotificationById(id)) === "string") return `Notification with id ${id} not found`;
     
-    const validationResult = validateNotification(notification);
+    const validationResult = validateNotification(notification, 'newTemplate');
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     await NotificationModel.updateNotification(id, notification);
@@ -92,11 +109,32 @@ async function deleteNotification(id) {
 
 }
 
-async function sendNewNotification(notification) {
+async function sendNewNotification(notificationDetails) {
 
-    console.log('sent');
+    winston.info(`In Notifications Controller - Sending new Notification to ${notificationDetails.receiver_email}`);
 
-    return true;
+    const validationResult = validateNotification(notificationDetails, 'newNotification');
+    if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
+
+    const notification = await getNotificationById(notificationDetails.notification_type);
+    if (typeof (notification) === "string") return `Invalid Notification Type`;
+
+    const template = notification[0].template_body;
+    const messageObject = {
+        notification_type : notificationDetails.notification_type
+    };
+
+    try {
+        messageObject.message_text = notificationParser.parseAndFillTags(template, notificationDetails.tags);
+    }
+
+    catch (err) {
+        return err.message;
+    }
+
+    messageController.createMessage(messageObject);
+
+    return `Notification Sent to ${notificationDetails.receiver_email}`;
 
 }
 

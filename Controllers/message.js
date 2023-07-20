@@ -4,93 +4,95 @@ const DB_Conn = require('../config/default.json').DB_CONN;
 const Constants = require('../config/constants');
 const Joi = require('joi');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var MesageModel = require('../PostgresModels/message'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var MesageModel = require('../MongoModels/message'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var MessageModel = require('../PostgresModels/message'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var MessageModel = require('../MongoModels/message'); };
 
-function validateMesage(body) {
+function validateMessage(body) {
 
-    winston.info('Validating Mesage Input');
+    winston.info('Validating Message Input');
     const schema = Joi.object({
         
         notification_type: Joi.number().integer().min(1).required(),
         message_text: Joi.string().required(),
-        timestamp: Joi.date
+        timestamp: Joi.date()
     });
 
     return schema.validate(body);
 
 };
 
-async function getAllMesages() {
+async function getAllMessages() {
 
-    winston.info(`In Mesages Controller - Getting All Mesages`);
+    winston.info(`In Messages Controller - Getting All Messages`);
 
-    result = await MesageModel.getAllMesages();
+    result = await MessageModel.getAllMessages();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
-async function getMesageById(id) {
+async function getMessageById(id) {
 
-    winston.info(`In Mesages Controller - Getting Mesage with ID ${id}`);
+    winston.info(`In Messages Controller - Getting Message with ID ${id}`);
 
-    result = await MesageModel.getMesageById(id);
+    result = await MessageModel.getMessageById(id);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return (result.rows.length > 0 ? result.rows : `Mesage with ID ${id} does not exist`);
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result !== null ? result : `Mesage with ID ${id} does not exist`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return (result.rows.length > 0 ? result.rows : `Message with ID ${id} does not exist`);
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result !== null ? result : `Message with ID ${id} does not exist`;
 
 }
 
-async function createMesage(Mesage) {
+async function createMessage(message) {
 
-    winston.info(`In Mesages Controller - Creating New Mesage`);
+    winston.info(`In Messages Controller - Creating New Message`);
 
-    const validationResult = validateMesage(Mesage);
+    const validationResult = validateMessage(message);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    result = await MesageModel.createMesage(Mesage);
+    if (!message.timestamp) message.timestamp = new Date().toUTCString(); 
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return `New Mesage with Id : ${result.rows[0]["id"]} created`;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return `New Mesage with Id : ${result["_id"]} created`;
+    result = await MessageModel.createMessage(message);
+
+    if (DB_Conn === Constants.DB_CONNS_PG) return `New Message with Id : ${result.rows[0]["id"]} created`;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return `New Message with Id : ${result["_id"]} created`;
     
 }
 
-async function updateMesage(id, Mesage) {
+async function updateMessage(id, message) {
 
-    winston.info(`In Mesages Controller - Updating Mesage with ID ${id}`);
+    winston.info(`In Messages Controller - Updating Message with ID ${id}`);
 
-    if (typeof (await getMesageById(id)) === "string") return `Mesage with id ${id} not found`;
+    if (typeof (await getMessageById(id)) === "string") return `Message with id ${id} not found`;
     
-    const validationResult = validateMesage(Mesage);
+    const validationResult = validateMessage(message);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    await MesageModel.updateMesage(id, Mesage);
+    await MessageModel.updateMessage(id, message);
 
-    return `Mesage with Id : ${id} updated`;
+    return `Message with Id : ${id} updated`;
 
 }
 
-async function deleteMesage(id) {
+async function deleteMessage(id) {
 
-    winston.info(`In Mesages Controller - Deleting Mesage with ID ${id}`);
+    winston.info(`In Messages Controller - Deleting Message with ID ${id}`);
 
-    const deletedMesage = await getMesageById(id);
+    const deletedMessage = await getMessageById(id);
 
-    if (typeof deletedMesage === "string") return `Mesage with id ${id} not found`;
+    if (typeof deletedMessage === "string") return `Message with id ${id} not found`;
 
-    result = await MesageModel.deleteMesage(id);
+    result = await MessageModel.deleteMessage(id);
 
-    return `Mesage with Id : ${id} deleted
-    ${JSON.stringify(deletedMesage)}`;
+    return `Message with Id : ${id} deleted
+    ${JSON.stringify(deletedMessage)}`;
 
 }
 
 module.exports = {
-    getAllMesages,
-    getMesageById,
-    createMesage,
-    updateMesage,
-    deleteMesage
+    getAllMessages,
+    getMessageById,
+    createMessage,
+    updateMessage,
+    deleteMessage
 }

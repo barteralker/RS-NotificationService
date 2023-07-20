@@ -38,7 +38,7 @@ routerApp.delete('/:id', [log, auth], async (req, res) => {
 
 routerApp.post('/send', [log, auth], async (req, res) => {
 
-    res.send(await notificationController.sendNewNotification(req.params.id))
+    res.send(await notificationController.sendNewNotification(req.body))
 
 })
 
