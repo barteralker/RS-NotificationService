@@ -1,7 +1,7 @@
 
 const winston = require('winston');
 const DB_Conn = require('../config/default.json').DB_CONN;
-const Constants = require('../config/constants');
+const Constants = require('../resources/constants');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var TagModel = require('../PostgresModels/tag'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var TagModel = require('../MongoModels/tag'); };

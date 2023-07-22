@@ -1,7 +1,7 @@
 
 const winston = require('winston');
 const DB_Conn = require('../config/default.json').DB_CONN;
-const Constants = require('../config/constants');
+const Constants = require('../resources/constants');
 const Joi = require('joi');
 const tagController = require('./tag');
 const messageController = require('./message');

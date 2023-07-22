@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const schemaName = require('../config/default.json').DB_Schema;
 const DB_Conn = require('../config/default.json').DB_CONN;
 const winston = require('winston');
-const Constants = require('../config/constants');
+const Constants = require('../resources/constants');
 
 if (DB_Conn === Constants.DB_CONNS_MONGO) {
     
