@@ -7,9 +7,9 @@ function parseForTags(template, removeBraces) {
 
     const regex = /{([^}]+)}/g;
     let tags = template.match(regex);
-    if (removeBraces) tags = tags.map(t => t.slice(1, -1))
+    if (tags && removeBraces) tags = tags.map(t => t.slice(1, -1))
 
-    return tags;
+    return tags === null ? [] : tags;
 
 }
 
