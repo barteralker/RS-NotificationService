@@ -1,7 +1,10 @@
 
+const winston = require('winston');
 const parser = require('../../Middleware/NotificationParser');
 
 test("Parser Test 1 - parseForTags1 - Normal String", () => {
+
+    winston.info = jest.fn();
 
     const testString = `Hello {username123}`;
 
@@ -15,6 +18,8 @@ test("Parser Test 1 - parseForTags1 - Normal String", () => {
 
 test("Parser Test 2 - parseForTags2 - String with no tags", () => {
 
+    winston.info = jest.fn();
+
     const testString = `Hello Barter`;
 
     let result = parser.parseForTags(testString, true);
@@ -26,6 +31,8 @@ test("Parser Test 2 - parseForTags2 - String with no tags", () => {
 });
 
 test("Parser Test 3 - parseAndFillTags1 - Normal Case", () => {
+
+    winston.info = jest.fn();
 
     let testString = `Hello {username123}`;
 
@@ -52,6 +59,8 @@ test("Parser Test 3 - parseAndFillTags1 - Normal Case", () => {
 
 test("Parser Test 4 - parseAndFillTags2 - Normal Case", () => {
 
+    winston.info = jest.fn();
+
     testString = `Hello user,
     Hope you are well.
     greeting.`
@@ -70,6 +79,8 @@ test("Parser Test 4 - parseAndFillTags2 - Normal Case", () => {
 
 test("Parser Test 5 - parseAndFillTags3 - unequal number of tags in template and tags list", () => {
 
+    winston.info = jest.fn();
+
     let testString = `Hello {username123}.
     Today is {date}`;
 
@@ -81,6 +92,8 @@ test("Parser Test 5 - parseAndFillTags3 - unequal number of tags in template and
 })
 
 test("Parser Test 6 - parseAndFillTags4 - inconsistent tags in template and tags list", () => {
+
+    winston.info = jest.fn();
 
     let testString = `Hello {username123}.
     Today is {date}`;
