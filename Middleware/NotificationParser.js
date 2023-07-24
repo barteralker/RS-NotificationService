@@ -19,7 +19,7 @@ function parseAndFillTags(template, tags) {
 
     tagPlaceholders = parseForTags(template, false);
 
-    if (tagPlaceholders.length !== Object.keys(tags).length) throw new Error('Not all Tag Values provided')
+    if (tagPlaceholders.length > Object.keys(tags).length) throw new Error('Not all Tag Values provided')
 
     let message = template;
 
@@ -28,6 +28,8 @@ function parseAndFillTags(template, tags) {
         message = message.replace(`{${tag}}`, tags[tag]);
     
     }
+
+    if (parseForTags(message, false).length > 0) throw new Error('Not all Tag Values provided');
 
     return message;
 
