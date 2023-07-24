@@ -7,7 +7,7 @@ const Joi = require('joi');
 if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../PostgresModels/application'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../MongoModels/application'); };
 
-function validateApp(body) {
+function validateApplication(body) {
 
     winston.info('Validating Application Input');
     const schema = Joi.object({
@@ -46,7 +46,7 @@ async function createApplication(application) {
 
     winston.info(`In Applications Controller - Creating New Application`);
 
-    const validationResult = validateApp(application);
+    const validationResult = validateApplication(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     result = await applicationModel.createApplication(application);
@@ -62,7 +62,7 @@ async function updateApplication(id, application) {
 
     if (typeof (await getApplicationById(id)) === "string") return `Appliction with id ${id} not found`;
     
-    const validationResult = validateApp(application);
+    const validationResult = validateApplication(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     await applicationModel.updateApplication(id, application);
