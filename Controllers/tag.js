@@ -15,6 +15,8 @@ async function createTags(tags) {
         await TagModel.createTag(tag);
 
     }
+
+    return;
 }
 
 module.exports = {
