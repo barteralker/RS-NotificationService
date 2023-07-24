@@ -31,7 +31,7 @@ function validateNotification(body, validator) {
         const schema = Joi.object({
             
             notification_type: Joi.number().integer().min(1).required(),
-            tags: Joi.object(),
+            tags: Joi.object().required(),
             receiver_email: Joi.string().required().min(10),
 
         });
