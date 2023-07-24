@@ -119,7 +119,7 @@ async function sendNewNotification(notificationDetails) {
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     const notification = await getNotificationById(notificationDetails.notification_type);
-    if (typeof (notification) === "string") return `Invalid Notification Type`;
+    if (typeof (notification) === "string") return `Error : Invalid Notification Type`;
 
     const template = notification[0].template_body;
     const messageObject = {
