@@ -88,6 +88,8 @@ async function updateNotification(id, notification) {
     const validationResult = validateNotification(notification, 'newTemplate');
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
+    await tagController.createTags(notificationParser.parseForTags(notification.template_body, true));
+
     await NotificationModel.updateNotification(id, notification);
 
     return `Notification with Id : ${id} updated`;
