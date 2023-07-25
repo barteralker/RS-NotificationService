@@ -44,7 +44,7 @@ async function createUser(user) {
     
     }
 
-    else return 'User already registered'
+    else return 'Error: User already registered'
     
 }
 

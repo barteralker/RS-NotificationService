@@ -6,20 +6,15 @@ const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const userController = require('../Controllers/user');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { 
-    var userModel = require('../PostgresModels/user'); 
-    var loginModel = require('../PostgresModels/login'); 
-};
-
-if (DB_Conn === Constants.DB_CONNS_MONGO) { 
-    var userModel = require('../MongoModels/user'); 
-    var loginModel = require('../MongoModels/login'); 
-};
+if (DB_Conn === Constants.DB_CONNS_PG) { var loginModel = require('../PostgresModels/login'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var loginModel = require('../MongoModels/login'); };
 
 function validateLoginInfo(body) {
 
     winston.info('Validating Login Input');
+
     const schema = Joi.object({
         
         email: Joi.string().required().min(10),
@@ -37,28 +32,20 @@ async function login(user) {
     winston.info(`In Logins Controller - Creating New Login`);
 
     const validationResult = validateLoginInfo(user);
-    if (validationResult.error) return `Invlaid username or password`;
+    if (validationResult.error) return `Invalid username or password`;
 
-    let userObj = await userModel.getUser(user);
+    let userObj = await userController.getUser(user);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) {
-
-        if (userObj.rows.length < 1) return 'Invlaid username or password';
-        
-        userObj = userObj.rows[0];
-    }
+    if (userObj.length < 1) return 'Invalid username or password';
+    userObj = userObj[0];
 
     if (DB_Conn === Constants.DB_CONNS_MONGO) {
-
-        if (userObj.length < 1) return 'Invlaid username or password';
-        
-        userObj = userObj[0];
         userObj.id = userObj["_id"].toString();
     }
 
     const validatePassword = await bcrypt.compare(user.password, userObj.password);
 
-    if (!validatePassword) return `Invlaid username or password`;
+    if (!validatePassword) return `Invalid username or password`;
 
     loginModel.createLogin(userObj.id)
 
