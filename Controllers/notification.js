@@ -45,7 +45,7 @@ async function getAllNotifications() {
 
     winston.info(`In Notifications Controller - Getting All Notifications`);
 
-    result = await NotificationModel.getAllNotifications();
+    const result = await NotificationModel.getAllNotifications();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
@@ -56,10 +56,10 @@ async function getNotificationById(id) {
 
     winston.info(`In Notifications Controller - Getting Notification with ID ${id}`);
 
-    result = await NotificationModel.getNotificationById(id);
+    const result = await NotificationModel.getNotificationById(id);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return (result.rows.length > 0 ? result.rows : `Notification with ID ${id} does not exist`);
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result !== null ? result : `Notification with ID ${id} does not exist`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
@@ -72,10 +72,10 @@ async function createNotification(notification) {
 
     await tagController.createTags(notificationParser.parseForTags(notification.template_body, true));
 
-    result = await NotificationModel.createNotification(notification);
+    const result = await NotificationModel.createNotification(notification);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return `New Notification with Id : ${result.rows[0]["id"]} created`;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return `New Notification with Id : ${result["_id"]} created`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
     
 }
 
@@ -90,9 +90,10 @@ async function updateNotification(id, notification) {
 
     await tagController.createTags(notificationParser.parseForTags(notification.template_body, true));
 
-    await NotificationModel.updateNotification(id, notification);
+    const result = await NotificationModel.updateNotification(id, notification);
 
-    return `Notification with Id : ${id} updated`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
@@ -104,10 +105,9 @@ async function deleteNotification(id) {
 
     if (typeof deletedNotification === "string") return `Notification with id ${id} not found`;
 
-    result = await NotificationModel.deleteNotification(id);
+    const result = await NotificationModel.deleteNotification(id);
 
-    return `Notification with Id : ${id} deleted
-    ${JSON.stringify(deletedNotification)}`;
+    return deletedNotification;
 
 }
 
@@ -136,7 +136,7 @@ async function sendNewNotification(notificationDetails) {
 
     messageController.createMessage(messageObject);
 
-    return `Notification Sent to ${notificationDetails.receiver_email}`;
+    return notificationDetails;
 
 }
 

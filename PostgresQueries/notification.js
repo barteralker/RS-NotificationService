@@ -7,7 +7,7 @@ const GET_NOTIFICATION_BY_ID = `SELECT * FROM ${schema}.notification WHERE id = 
 
 const CREATE_NOTIFICATION = `INSERT INTO ${schema}.notification (event_id, name, template_subject, template_body) VALUES ($1, $2, $3, $4) RETURNING id`;
 
-const UPDATE_NOTIFICATION = `UPDATE ${schema}.notification SET event_id = $1, name = $2, template_subject = $3, template_body = $4 WHERE id = $5`;
+const UPDATE_NOTIFICATION = `UPDATE ${schema}.notification SET event_id = $1, name = $2, template_subject = $3, template_body = $4 WHERE id = $5 RETURNING *`;
 
 const DELETE_NOTIFICATION = `DELETE FROM ${schema}.notification WHERE id = $1`;
 

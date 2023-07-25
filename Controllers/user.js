@@ -39,8 +39,8 @@ async function createUser(user) {
 
         result = await userModel.createUser(user);
 
-        if (DB_Conn === Constants.DB_CONNS_PG) return `New User with Id : ${result.rows[0]["id"]} created`;
-        if (DB_Conn === Constants.DB_CONNS_MONGO) return `New User with Id : ${result["_id"]} created`;
+        if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+        if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
     
     }
 

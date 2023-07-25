@@ -25,7 +25,7 @@ async function getAllMessages() {
 
     winston.info(`In Messages Controller - Getting All Messages`);
 
-    result = await MessageModel.getAllMessages();
+    const result = await MessageModel.getAllMessages();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
@@ -36,10 +36,10 @@ async function getMessageById(id) {
 
     winston.info(`In Messages Controller - Getting Message with ID ${id}`);
 
-    result = await MessageModel.getMessageById(id);
+    const result = await MessageModel.getMessageById(id);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return (result.rows.length > 0 ? result.rows : `Message with ID ${id} does not exist`);
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result !== null ? result : `Message with ID ${id} does not exist`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
@@ -52,10 +52,10 @@ async function createMessage(message) {
 
     if (!message.timestamp) message.timestamp = new Date().toUTCString(); 
 
-    result = await MessageModel.createMessage(message);
+    const result = await MessageModel.createMessage(message);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return `New Message with Id : ${result.rows[0]["id"]} created`;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return `New Message with Id : ${result["_id"]} created`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
     
 }
 
@@ -68,9 +68,10 @@ async function updateMessage(id, message) {
     const validationResult = validateMessage(message);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    await MessageModel.updateMessage(id, message);
+    const result = await MessageModel.updateMessage(id, message);
 
-    return `Message with Id : ${id} updated`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
@@ -82,10 +83,9 @@ async function deleteMessage(id) {
 
     if (typeof deletedMessage === "string") return `Message with id ${id} not found`;
 
-    result = await MessageModel.deleteMessage(id);
+    const result = await MessageModel.deleteMessage(id);
 
-    return `Message with Id : ${id} deleted
-    ${JSON.stringify(deletedMessage)}`;
+    return deletedMessage;
 
 }
 

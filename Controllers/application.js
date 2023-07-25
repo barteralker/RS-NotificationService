@@ -25,7 +25,7 @@ async function getAllApplications() {
 
     winston.info(`In Applications Controller - Getting All Applications`);
 
-    result = await applicationModel.getAllApplications();
+    const result = await applicationModel.getAllApplications();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
@@ -36,10 +36,10 @@ async function getApplicationById(id) {
 
     winston.info(`In Applications Controller - Getting Application with ID ${id}`);
 
-    result = await applicationModel.getApplicationById(id);
+    const result = await applicationModel.getApplicationById(id);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return (result.rows.length > 0 ? result.rows : `Application with ID ${id} does not exist`);
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result !== null ? result : `Application with ID ${id} does not exist`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
@@ -50,10 +50,10 @@ async function createApplication(application) {
     const validationResult = validateApplication(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    result = await applicationModel.createApplication(application);
+    const result = await applicationModel.createApplication(application);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return `New Application with Id : ${result.rows[0]["id"]} created`;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return `New Application with Id : ${result["_id"]} created`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
     
 }
 
@@ -66,9 +66,10 @@ async function updateApplication(id, application) {
     const validationResult = validateApplication(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    await applicationModel.updateApplication(id, application);
+    const result =  await applicationModel.updateApplication(id, application);
 
-    return `Application with Id : ${id} updated`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
@@ -82,8 +83,7 @@ async function deleteApplication(id) {
 
     result = await applicationModel.deleteApplication(id);
 
-    return `Application with Id : ${id} deleted
-    ${JSON.stringify(deletedApplication)}`;
+    return deletedApplication
 
 }
 

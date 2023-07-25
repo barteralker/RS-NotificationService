@@ -7,7 +7,7 @@ const GET_MESSAGE_BY_ID = `SELECT * FROM ${schema}.message WHERE id = $1`;
 
 const CREATE_MESSAGE = `INSERT INTO ${schema}.message (message_text, notification_type, timestamp) VALUES ($1, $2, $3) RETURNING id`;
 
-const UPDATE_MESSAGE = `UPDATE ${schema}.message SET message_text = $1, notification_type = $2, timestamp = $3 WHERE id = $4`;
+const UPDATE_MESSAGE = `UPDATE ${schema}.message SET message_text = $1, notification_type = $2, timestamp = $3 WHERE id = $4 RETURNING *`;
 
 const DELETE_MESSAGE = `DELETE FROM ${schema}.message WHERE id = $1`;
 

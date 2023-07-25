@@ -26,7 +26,7 @@ async function getAllEvents() {
 
     winston.info(`In Events Controller - Getting All Events`);
 
-    result = await eventModel.getAllEvents();
+    const result = await eventModel.getAllEvents();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
@@ -37,10 +37,10 @@ async function getEventById(id) {
 
     winston.info(`In Events Controller - Getting Event with ID ${id}`);
 
-    result = await eventModel.getEventById(id);
+    const result = await eventModel.getEventById(id);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return (result.rows.length > 0 ? result.rows : `Event with ID ${id} does not exist`);
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result !== null ? result : `Event with ID ${id} does not exist`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
@@ -51,10 +51,10 @@ async function createEvent(event) {
     const validationResult = validateEvent(event);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    result = await eventModel.createEvent(event);
+    const result = await eventModel.createEvent(event);
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return `New Event with Id : ${result.rows[0]["id"]} created`;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return `New Event with Id : ${result["_id"]} created`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
     
 }
 
@@ -67,9 +67,10 @@ async function updateEvent(id, event) {
     const validationResult = validateEvent(event);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    await eventModel.updateEvent(id, event);
+    const result = await eventModel.updateEvent(id, event);
 
-    return `Event with Id : ${id} updated`;
+    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
@@ -83,8 +84,7 @@ async function deleteEvent(id) {
 
     result = await eventModel.deleteEvent(id);
 
-    return `Event with Id : ${id} deleted
-    ${JSON.stringify(deletedEvent)}`;
+    return deletedEvent;
 
 }
 
