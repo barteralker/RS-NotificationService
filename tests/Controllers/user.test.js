@@ -86,9 +86,9 @@ test('User Test 3 - Create User (User already exists)', async () => {
         }]
     }
 
-    const retMng = {
+    const retMng = [{
         '_id' : 1
-    }
+    }]
 
     if (DB_Conn === Constants.DB_CONNS_PG) { userModel.getUser = jest.fn().mockReturnValue(retPg); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { userModel.getUser = jest.fn().mockReturnValue(retMng); };
