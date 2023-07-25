@@ -1,0 +1,189 @@
+
+const winston = require('winston');
+const messageController = require('../../Controllers/message');
+const DB_Conn = require('../../config/default.json').DB_CONN;
+const Constants = require('../../resources/constants');
+
+if (DB_Conn === Constants.DB_CONNS_PG) { var messageModel = require('../../PostgresModels/message'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var messageModel = require('../../MongoModels/message'); };
+
+test('Message Test 1 - Get All Messages', async () => {
+
+    winston.info = jest.fn();
+
+    const ret = [{
+        'notification_type' : 1,
+        'message_text' : 'Msg1',
+        'timestamp' : '2023-07-20 06:00:10.000'
+    }, {
+        'notification_type' : 1,
+        'message_text' : 'Msg2',
+        'timestamp' : '2023-07-20 06:00:10.000'
+    }]
+
+    if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.getAllMessages = jest.fn().mockReturnValue({ 'rows' : ret}); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getAllMessages = jest.fn().mockReturnValue(ret); };
+
+    let result = await messageController.getAllMessages();
+
+    expect(result).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({
+                message_text: 'Msg1'
+            })
+        ])
+    );
+
+    expect(result).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({
+                message_text: 'Msg2'
+            })
+        ])
+    );
+
+});
+
+test('Message Test 2 - Get Message by Id', async () => {
+
+    winston.info = jest.fn();
+
+    const ret = [{
+        'notification_type' : 1,
+        'message_text' : 'Msg1',
+        'timestamp' : '2023-07-20 06:00:10.000'
+    }]
+
+    if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.getMessageById = jest.fn().mockReturnValue({ 'rows' : ret}); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getMessageById = jest.fn().mockReturnValue(ret); };
+
+    let result = await messageController.getMessageById(1);
+
+    expect(result).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({
+                message_text: 'Msg1'
+            })
+        ])
+    );
+
+});
+
+test('Message Test 3 - Get Message by Id (no results)', async () => {
+
+    winston.info = jest.fn();
+
+    if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.getMessageById = jest.fn().mockReturnValue({ 'rows' : []}); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getMessageById = jest.fn().mockReturnValue(null); };
+
+    let result = await messageController.getMessageById(1);
+
+    expect(result).toMatch('does not exist');
+
+});
+
+test('Message Test 4 - Fail Message Validation', async () => {
+
+    winston.info = jest.fn();
+
+    const retPg = {
+        'rows' : [{
+            'id' : 1
+        }]
+    }
+
+    const retMng = [{
+        '_id' : 1
+    }]
+
+    if (DB_Conn === Constants.DB_CONNS_PG) { 
+        messageModel.createMessage = jest.fn().mockReturnValue(retPg); 
+        messageModel.updateMessage = jest.fn().mockReturnValue(retPg); 
+    };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { 
+        messageModel.createMessage = jest.fn().mockReturnValue(retMng); 
+        messageModel.updateMessage = jest.fn().mockReturnValue(retMng); 
+    };
+
+    let resultCreate = await messageController.createMessage({});
+    let resultUpdate = await messageController.createMessage({});
+
+    expect(resultCreate).toMatch('Error');
+    expect(resultUpdate).toMatch('Error');
+
+});
+
+test('Message Test 5 - Create Message', async () => {
+
+    winston.info = jest.fn();
+
+    const retPg = {
+        'rows' : [{
+            'id' : 1
+        }]
+    }
+
+    const retMng = {
+        '_id' : 1
+    }
+
+    if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.createMessage = jest.fn().mockReturnValue(retPg); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.createMessage = jest.fn().mockReturnValue(retMng); };
+
+    let result = await messageController.createMessage({
+        'notification_type' : 1,
+        'message_text' : 'Msg1'
+    });
+
+    expect(result).toMatch('1');
+
+});
+
+test('Message Test 6 - Update Message', async () => {
+
+    winston.info = jest.fn();
+
+    messageController.getMessageById = jest.fn().mockReturnValue({});
+
+    messageModel.updateMessage = jest.fn();
+
+    let result = await messageController.updateMessage(1, {
+        'notification_type' : 1,
+        'message_text' : 'Msg1'
+    });
+
+    expect(result).toMatch('1');
+
+});
+
+test('Message Test 7 - Update / Delete Message (message Id not found)', async () => {
+
+    winston.info = jest.fn();
+
+    messageController.getMessageById = jest.fn().mockReturnValue('not found');
+
+    let resultUpdate = await messageController.updateMessage(1, {
+        'notification_type' : 1,
+        'message_text' : 'Msg1'
+    });
+
+    let resultDelete = await messageController.deleteMessage(1);
+
+    expect(resultUpdate).toMatch('not found');
+    expect(resultDelete).toMatch('not found');
+
+});
+
+test('Message Test 8 - Delete Message', async () => {
+
+    winston.info = jest.fn();
+
+    messageController.getMessageById = jest.fn().mockReturnValue({});
+
+    messageModel.deleteMessage = jest.fn();
+
+    let result = await messageController.deleteMessage(1);
+
+    expect(result).toMatch('1');
+
+});

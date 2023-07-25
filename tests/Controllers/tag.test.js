@@ -1,0 +1,28 @@
+
+const winston = require('winston');
+const DB_Conn = require('../../config/default.json').DB_CONN;
+const Constants = require('../../resources/constants');
+const tagController = require('../../Controllers/tag');
+
+if (DB_Conn === Constants.DB_CONNS_PG) { var TagModel = require('../../PostgresModels/tag'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var TagModel = require('../../MongoModels/tag'); };
+
+test('Tag Test 1 - Create Tags', async () => {
+
+    winston.info = jest.fn();
+
+    TagModel.createTag = jest.fn();
+
+    tagController.createTags(['tag1', 'tag2']);
+
+});
+
+test('Tag Test 2 - Create Tags (Empty Tag Array)', async () => {
+
+    winston.info = jest.fn();
+
+    TagModel.createTag = jest.fn();
+
+    tagController.createTags([]);
+
+});
