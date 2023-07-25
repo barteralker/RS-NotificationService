@@ -12,9 +12,9 @@ function validateUser(body) {
     winston.info('Validating User Input');
     const schema = Joi.object({
         
-        name: Joi.string().required(),
-        email: Joi.string().required().min(10),
-        password: Joi.string().required().min(8),
+        name: Joi.string().required().min(5).max(25),
+        email: Joi.string().required().min(10).max(30),
+        password: Joi.string().required().min(8).max(18),
         application_id: Joi.number().required().min(1)
 
     });

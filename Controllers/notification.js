@@ -17,9 +17,9 @@ function validateNotification(body, validator) {
         const schema = Joi.object({
             
             event_id: Joi.number().integer().min(1).required(),
-            name: Joi.string().required(),
-            template_subject: Joi.string().required(),
-            template_body: Joi.string().required()
+            name: Joi.string().required().min(5).max(25),
+            template_subject: Joi.string().required().min(5).max(25),
+            template_body: Joi.string().required().min(20)
 
         });
 
@@ -32,7 +32,7 @@ function validateNotification(body, validator) {
             
             notification_type: Joi.number().integer().min(1).required(),
             tags: Joi.object().required(),
-            receiver_email: Joi.string().required().min(10),
+            receiver_email: Joi.string().required().min(10).max(30),
 
         });
 

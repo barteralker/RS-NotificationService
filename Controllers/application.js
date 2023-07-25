@@ -12,8 +12,9 @@ function validateApplication(body) {
     winston.info('Validating Application Input');
     const schema = Joi.object({
         
-        name: Joi.string().required(),
-        description: Joi.string()
+        name: Joi.string().required().min(3).max(15),
+        description: Joi.string().max(50)
+
     });
 
     return schema.validate(body);

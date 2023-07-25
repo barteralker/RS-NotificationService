@@ -13,8 +13,9 @@ function validateEvent(body) {
     const schema = Joi.object({
         
         application_id: Joi.number().integer().min(1).required(),
-        name: Joi.string().required(),
-        description: Joi.string()
+        name: Joi.string().required().min(5).max(25),
+        description: Joi.string().max(50)
+
     });
 
     return schema.validate(body);
