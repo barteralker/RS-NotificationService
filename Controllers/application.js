@@ -60,9 +60,7 @@ async function createApplication(application) {
 
     let exists = await applicationModel.getFilteredApplications(utils.postgresFilterCreator({"name" : application.name}));
     if (DB_Conn === Constants.DB_CONNS_PG) exists = exists.rows;
-
     exists = exists.length > 0;
-    console.log(application.name, exists);
 
     if (!exists) {
     
