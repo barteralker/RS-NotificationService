@@ -3,6 +3,7 @@ const winston = require('winston');
 const DB_Conn = require('../config/default.json').DB_CONN;
 const Constants = require('../resources/constants');
 const Joi = require('joi');
+const utils = require('../Middleware/Utils');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../PostgresModels/application'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../MongoModels/application'); };
@@ -21,11 +22,18 @@ function validateApplication(body) {
 
 };
 
-async function getAllApplications() {
+async function getAllApplications(req) {
 
     winston.info(`In Applications Controller - Getting All Applications`);
 
-    const result = await applicationModel.getAllApplications();
+    if (req.header('filter') && req.header('filter') === 'true') {
+
+        if (DB_Conn === Constants.DB_CONNS_PG) var result = await applicationModel.getFilteredApplications(utils.postgresFilterCreator(req.body));
+        if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await applicationModel.getFilteredApplications(req.body);
+
+    }
+
+    else var result = await applicationModel.getAllApplications();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
@@ -61,12 +69,14 @@ async function updateApplication(id, application) {
 
     winston.info(`In Applications Controller - Updating Application with ID ${id}`);
 
+    console.log(await getApplicationById(id));
     if (typeof (await getApplicationById(id)) === "string") return `Appliction with id ${id} not found`;
     
     const validationResult = validateApplication(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     const result =  await applicationModel.updateApplication(id, application);
+
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;

@@ -10,6 +10,14 @@ async function getAllApplications() {
 
 }
 
+async function getFilteredApplications(filters) {
+
+    winston.info(`In Applications Model - Getting Filtered Applications`);
+
+    return (await Application.find(filters));
+
+}
+
 async function getApplicationById(id) {
 
     winston.info(`In Applications Model - Getting Application with ID ${id}`);
@@ -52,6 +60,7 @@ async function deleteApplication(id) {
 
 module.exports = {
     getAllApplications,
+    getFilteredApplications,
     getApplicationById,
     createApplication,
     updateApplication,

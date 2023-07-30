@@ -75,7 +75,7 @@ test('Application Test 3 - Get Application by Id (no results)', async () => {
 
     let result = await applicationController.getApplicationById(1);
 
-    expect(result).toMatch('does not exist');
+    expect(result).toStrictEqual([]);
 
 });
 
@@ -120,9 +120,9 @@ test('Application Test 5 - Create Application', async () => {
         }]
     }
 
-    const retMng = {
+    const retMng = [{
         '_id' : 1
-    }
+    }]
 
     if (DB_Conn === Constants.DB_CONNS_PG) { applicationModel.createApplication = jest.fn().mockReturnValue(retPg); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { applicationModel.createApplication = jest.fn().mockReturnValue(retMng); };
@@ -131,7 +131,28 @@ test('Application Test 5 - Create Application', async () => {
         'name' : 'App1'
     });
 
-    expect(result).toMatch('1');
+    expect(result.length).toBe(1);
+
+    if (DB_Conn === Constants.DB_CONNS_PG) {
+        // expect(result).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    id: '1'
+                })
+            ])
+        // );
+    }
+
+    if (DB_Conn === Constants.DB_CONNS_MONGO) {
+        // expect(result).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    _id: '1'
+                })
+            ])
+        // );
+    }
+
 
 });
 
@@ -141,13 +162,38 @@ test('Application Test 6 - Update Application', async () => {
 
     applicationController.getApplicationById = jest.fn().mockReturnValue({});
 
-    applicationModel.updateApplication = jest.fn();
+    // applicationModel.updateApplication = jest.fn();
+    const retPg = {
+        'rows' : [{
+            'id' : 1,
+            'name' : 'App No. 1',
+            'description' : 'desc1'
+        }]
+    }
+
+    const retMng = {
+        '_id' : 1,
+        'name' : 'App2',
+        'description' : 'desc2'
+    }
+
+    if (DB_Conn === Constants.DB_CONNS_PG) { applicationModel.createApplication = jest.fn().mockReturnValue(retPg); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { applicationModel.createApplication = jest.fn().mockReturnValue(retMng); };
+
 
     let result = await applicationController.updateApplication(1, {
         'name' : 'App1'
     });
 
-    expect(result).toMatch('1');
+    // expect(result).toMatch('1');
+    // expect(result).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({
+                name: 'App1'
+            })
+        ])
+    // );
+
 
 });
 

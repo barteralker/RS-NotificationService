@@ -15,6 +15,21 @@ async function getAllApplications() {
 
 }
 
+async function getFilteredApplications(appendee) {
+
+    winston.info(`In Applications Model - Getting Filtered Applications`);
+
+    pool = new pg.Pool(pg.credentials);
+
+    let querySQl = queries.GET_ALL_APPLICATIONS + appendee; 
+    
+    const result = await pool.query(querySQl);
+    await pool.end();   
+
+    return result;
+
+}
+
 async function getApplicationById(id) {
 
     winston.info(`In Applications Model - Getting Application with ID ${id}`);
@@ -85,6 +100,7 @@ async function deleteApplication(id) {
 
 module.exports = {
     getAllApplications,
+    getFilteredApplications,
     getApplicationById,
     createApplication,
     updateApplication,

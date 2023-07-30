@@ -20,6 +20,21 @@ async function getAllNotifications() {
 
 }
 
+async function getFilteredNotifications(appendee) {
+
+    winston.info(`In Notifications Model - Getting Filtered Notifications`);
+
+    pool = new pg.Pool(pg.credentials);
+
+    let querySQl = queries.GET_ALL_NOTIFICATIONS + appendee; 
+    
+    const result = await pool.query(querySQl);
+    await pool.end();   
+
+    return result;
+
+}
+
 async function getNotificationById(id) {
 
     winston.info(`In Notifications Model - Getting Notification with ID ${id}`);
@@ -94,6 +109,7 @@ async function deleteNotification(id) {
 
 module.exports = {
     getAllNotifications,
+    getFilteredNotifications,
     getNotificationById,
     createNotification,
     updateNotification,

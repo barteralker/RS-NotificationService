@@ -20,6 +20,21 @@ async function getAllMessages() {
 
 }
 
+async function getFilteredMessages(appendee) {
+
+    winston.info(`In Messages Model - Getting Filtered Messages`);
+
+    pool = new pg.Pool(pg.credentials);
+
+    let querySQl = queries.GET_ALL_MESSAGES + appendee; 
+    
+    const result = await pool.query(querySQl);
+    await pool.end();   
+
+    return result;
+
+}
+
 async function getMessageById(id) {
 
     winston.info(`In Messages Model - Getting Message with ID ${id}`);
@@ -94,6 +109,7 @@ async function deleteMessage(id) {
 
 module.exports = {
     getAllMessages,
+    getFilteredMessages,
     getMessageById,
     createMessage,
     updateMessage,

@@ -10,6 +10,14 @@ async function getAllEvents() {
 
 }
 
+async function getFilteredEvents(filters) {
+
+    winston.info(`In Events Model - Getting Filtered Events`);
+
+    return (await Event.find(filters));
+
+}
+
 async function getEventById(id) {
 
     winston.info(`In Events Model - Getting Event with ID ${id}`);
@@ -54,6 +62,7 @@ async function deleteEvent(id) {
 
 module.exports = {
     getAllEvents,
+    getFilteredEvents,
     getEventById,
     createEvent,
     updateEvent,

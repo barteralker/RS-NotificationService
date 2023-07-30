@@ -10,6 +10,14 @@ async function getAllMessages() {
 
 }
 
+async function getFilteredMessages(filters) {
+
+    winston.info(`In Messages Model - Getting Filtered Messages`);
+
+    return (await Message.find(filters));
+
+}
+
 async function getMessageById(id) {
 
     winston.info(`In Messages Model - Getting Message with ID ${id}`);
@@ -52,6 +60,7 @@ async function deleteMessage(id) {
 
 module.exports = {
     getAllMessages,
+    getFilteredMessages,
     getMessageById,
     createMessage,
     updateMessage,

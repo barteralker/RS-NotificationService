@@ -20,6 +20,21 @@ async function getAllEvents() {
 
 }
 
+async function getFilteredEvents(appendee) {
+
+    winston.info(`In Events Model - Getting Filtered Events`);
+
+    pool = new pg.Pool(pg.credentials);
+
+    let querySQl = queries.GET_ALL_EVENTS + appendee; 
+    
+    const result = await pool.query(querySQl);
+    await pool.end();   
+
+    return result;
+
+}
+
 async function getEventById(id) {
 
     winston.info(`In Events Model - Getting Event with ID ${id}`);
@@ -94,6 +109,7 @@ async function deleteEvent(id) {
 
 module.exports = {
     getAllEvents,
+    getFilteredEvents,
     getEventById,
     createEvent,
     updateEvent,

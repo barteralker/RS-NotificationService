@@ -8,7 +8,7 @@ const log = require('../Middleware/Logger');
 
 routerApp.get('/', log, async (req, res) => {
 
-    res.send(await applicationController.getAllApplications()); 
+    res.send(await applicationController.getAllApplications(req)); 
 
 });
 
@@ -20,7 +20,6 @@ routerApp.get('/:id', log, async (req, res) => {
 
 routerApp.post('', [log, auth], async (req, res, next) => {
 
-    // auth(req, res, next);
     res.send(await applicationController.createApplication(req.body)); 
 
 });

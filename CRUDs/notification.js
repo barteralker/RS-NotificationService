@@ -8,7 +8,7 @@ const log = require('../Middleware/Logger');
 
 routerApp.get('/', log, async (req, res) => {
 
-    res.send(await notificationController.getAllNotifications()); 
+    res.send(await notificationController.getAllNotifications(req)); 
 
 });
 

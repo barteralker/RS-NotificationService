@@ -8,7 +8,7 @@ const log = require('../Middleware/Logger');
 
 routerApp.get('/', log, async (req, res) => {
 
-    res.send(await messageController.getAllMessages()); 
+    res.send(await messageController.getAllMessages(req)); 
 
 });
 

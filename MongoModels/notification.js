@@ -10,6 +10,14 @@ async function getAllNotifications() {
 
 }
 
+async function getFilteredNotifications(filters) {
+
+    winston.info(`In Notifications Model - Getting Filtered Notifications`);
+
+    return (await Notification.find(filters));
+
+}
+
 async function getNotificationById(id) {
 
     winston.info(`In Notifications Model - Getting Notification with ID ${id}`);
@@ -55,6 +63,7 @@ async function deleteNotification(id) {
 
 module.exports = {
     getAllNotifications,
+    getFilteredNotifications,
     getNotificationById,
     createNotification,
     updateNotification,

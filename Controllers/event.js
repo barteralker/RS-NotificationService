@@ -26,7 +26,14 @@ async function getAllEvents() {
 
     winston.info(`In Events Controller - Getting All Events`);
 
-    const result = await eventModel.getAllEvents();
+    if (req.header('filter') && req.header('filter') === 'true') {
+
+        if (DB_Conn === Constants.DB_CONNS_PG) var result = await eventModel.getFilteredEvents(utils.postgresFilterCreator(req.body));
+        if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await eventModel.getFilteredEvents(req.body);
+
+    }
+
+    else var result = await eventModel.getAllEvents();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
