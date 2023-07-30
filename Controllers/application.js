@@ -58,10 +58,22 @@ async function createApplication(application) {
     const validationResult = validateApplication(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    const result = await applicationModel.createApplication(application);
+    let exists = await applicationModel.getFilteredApplications(utils.postgresFilterCreator({"name" : application.name}));
+    if (DB_Conn === Constants.DB_CONNS_PG) exists = exists.rows;
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    exists = exists.length > 0;
+    console.log(application.name, exists);
+
+    if (!exists) {
+    
+        var result = await applicationModel.createApplication(application);
+
+        if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
+        if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    
+    }
+
+    else throw new Error('Application already exists');
     
 }
 
