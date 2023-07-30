@@ -25,7 +25,14 @@ async function getAllMessages() {
 
     winston.info(`In Messages Controller - Getting All Messages`);
 
-    const result = await MessageModel.getAllMessages();
+    if (req.header('filter') && req.header('filter') === 'true') {
+
+        if (DB_Conn === Constants.DB_CONNS_PG) var result = await MessageModel.getFilteredMessages(utils.postgresFilterCreator(req.body));
+        if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await MessageModel.getFilteredMessages(req.body);
+
+    }
+
+    else var result = await MessageModel.getAllMessages();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;

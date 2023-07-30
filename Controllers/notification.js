@@ -45,7 +45,14 @@ async function getAllNotifications() {
 
     winston.info(`In Notifications Controller - Getting All Notifications`);
 
-    const result = await NotificationModel.getAllNotifications();
+    if (req.header('filter') && req.header('filter') === 'true') {
+
+        if (DB_Conn === Constants.DB_CONNS_PG) var result = await NotificationModel.getFilteredNotifications(utils.postgresFilterCreator(req.body));
+        if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await NotificationModel.getFilteredNotifications(req.body);
+
+    }
+
+    else var result = await NotificationModel.getAllNotifications();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
