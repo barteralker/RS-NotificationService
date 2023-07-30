@@ -35,8 +35,8 @@ async function getAllApplications(req) {
 
     else var result = await applicationModel.getAllApplications();
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    if (DB_Conn === Constants.DB_CONNS_PG) return utils.paginateResults(result.rows, req);
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return utils.paginateResults(result, req);
 
 }
 

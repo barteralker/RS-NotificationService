@@ -6,6 +6,7 @@ const Joi = require('joi');
 const tagController = require('./tag');
 const messageController = require('./message');
 const notificationParser = require('../Middleware/NotificationParser');
+const utils = require('../Middleware/Utils');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var NotificationModel = require('../PostgresModels/notification'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var NotificationModel = require('../MongoModels/notification'); };
@@ -54,8 +55,8 @@ async function getAllNotifications() {
 
     else var result = await NotificationModel.getAllNotifications();
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    if (DB_Conn === Constants.DB_CONNS_PG) return utils.paginateResults(result.rows, req);
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return utils.paginateResults(result, req);
 
 }
 

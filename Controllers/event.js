@@ -3,6 +3,7 @@ const winston = require('winston');
 const DB_Conn = require('../config/default.json').DB_CONN;
 const Constants = require('../resources/constants');
 const Joi = require('joi');
+const utils = require('../Middleware/Utils');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var eventModel = require('../PostgresModels/event'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../MongoModels/event'); };
@@ -35,8 +36,8 @@ async function getAllEvents() {
 
     else var result = await eventModel.getAllEvents();
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    if (DB_Conn === Constants.DB_CONNS_PG) return utils.paginateResults(result.rows, req);
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return utils.paginateResults(result, req);
 
 }
 

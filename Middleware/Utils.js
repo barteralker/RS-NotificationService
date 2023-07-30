@@ -14,6 +14,21 @@ function postgresFilterCreator(filters) {
     return appendee;
 }
 
+function paginateResults(result, req) {
+
+    if (!req.header('pageNumber') && !req.header('pageSize')) return result;
+
+    const pageN = req.header('pageNumber') ? parseInt(req.header('pageNumber')) : 1;
+    const pageS = req.header('pageSize') ? parseInt(req.header('pageSize')) : 10;
+
+    const start = (pageN - 1) * pageS;
+    const end = start + pageS;
+
+    return result.slice(start, end);
+    
+}
+
 module.exports = {
-    postgresFilterCreator
+    postgresFilterCreator,
+    paginateResults
 }
