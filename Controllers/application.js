@@ -79,7 +79,6 @@ async function updateApplication(id, application) {
 
     winston.info(`In Applications Controller - Updating Application with ID ${id}`);
 
-    console.log(await getApplicationById(id));
     if (typeof (await getApplicationById(id)) === "string") return `Appliction with id ${id} not found`;
     
     const validationResult = validateApplication(application);
