@@ -16,13 +16,14 @@ function validateMessage(body) {
         notification_type: Joi.number().integer().min(1).required(),
         message_text: Joi.string().required(),
         timestamp: Joi.date()
+
     });
 
     return schema.validate(body);
 
 };
 
-async function getAllMessages() {
+async function getAllMessages(req) {
 
     winston.info(`In Messages Controller - Getting All Messages`);
 
@@ -63,7 +64,7 @@ async function createMessage(message) {
     const result = await MessageModel.createMessage(message);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
     
 }
 
@@ -71,7 +72,7 @@ async function updateMessage(id, message) {
 
     winston.info(`In Messages Controller - Updating Message with ID ${id}`);
 
-    if (typeof (await getMessageById(id)) === "string") return `Message with id ${id} not found`;
+    if ((await getMessageById(id)).length === 0) return `Message with id ${id} not found`;
     
     const validationResult = validateMessage(message);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
@@ -79,7 +80,7 @@ async function updateMessage(id, message) {
     const result = await MessageModel.updateMessage(id, message);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
 
 }
 
@@ -89,11 +90,12 @@ async function deleteMessage(id) {
 
     const deletedMessage = await getMessageById(id);
 
-    if (typeof deletedMessage === "string") return `Message with id ${id} not found`;
+    if (deletedMessage.length === 0) return `Message with id ${id} not found`;
 
-    const result = await MessageModel.deleteMessage(id);
+    result = await MessageModel.deleteMessage(id);
 
-    return deletedMessage;
+    if (DB_Conn === Constants.DB_CONNS_PG) return deletedMessage;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [deletedMessage];
 
 }
 

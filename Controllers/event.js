@@ -23,7 +23,7 @@ function validateEvent(body) {
 
 };
 
-async function getAllEvents() {
+async function getAllEvents(req) {
 
     winston.info(`In Events Controller - Getting All Events`);
 
@@ -62,7 +62,7 @@ async function createEvent(event) {
     const result = await eventModel.createEvent(event);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
     
 }
 
@@ -70,7 +70,7 @@ async function updateEvent(id, event) {
 
     winston.info(`In Events Controller - Updating Event with ID ${id}`);
 
-    if (typeof (await getEventById(id)) === "string") return `Event with id ${id} not found`;
+    if ((await getEventById(id)).length === 0) return `Event with id ${id} not found`;
     
     const validationResult = validateEvent(event);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
@@ -78,7 +78,7 @@ async function updateEvent(id, event) {
     const result = await eventModel.updateEvent(id, event);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
 
 }
 
@@ -88,11 +88,12 @@ async function deleteEvent(id) {
 
     const deletedEvent = await getEventById(id);
 
-    if (typeof deletedEvent === "string") return `Event with id ${id} not found`;
+    if (deletedEvent.length === 0) return `Event with id ${id} not found`;
 
     result = await eventModel.deleteEvent(id);
 
-    return deletedEvent;
+    if (DB_Conn === Constants.DB_CONNS_PG) return deletedEvent;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [deletedEvent];
 
 }
 

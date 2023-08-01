@@ -40,7 +40,7 @@ async function createUser(user) {
         result = await userModel.createUser(user);
 
         if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-        if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+        if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
     
     }
 

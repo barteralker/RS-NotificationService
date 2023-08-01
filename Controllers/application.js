@@ -79,16 +79,15 @@ async function updateApplication(id, application) {
 
     winston.info(`In Applications Controller - Updating Application with ID ${id}`);
 
-    if (typeof (await getApplicationById(id)) === "string") return `Appliction with id ${id} not found`;
+    if ((await getApplicationById(id)).length === 0) return `Appliction with id ${id} not found`;
     
     const validationResult = validateApplication(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     const result =  await applicationModel.updateApplication(id, application);
 
-
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
 
 }
 
@@ -98,11 +97,12 @@ async function deleteApplication(id) {
 
     const deletedApplication = await getApplicationById(id);
 
-    if (typeof deletedApplication === "string") return `Appliction with id ${id} not found`;
+    if (deletedApplication.length === 0) return `Appliction with id ${id} not found`;
 
     result = await applicationModel.deleteApplication(id);
 
-    return deletedApplication
+    if (DB_Conn === Constants.DB_CONNS_PG) return deletedApplication;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [deletedApplication];
 
 }
 

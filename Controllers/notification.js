@@ -42,7 +42,7 @@ function validateNotification(body, validator) {
 
 };
 
-async function getAllNotifications() {
+async function getAllNotifications(req) {
 
     winston.info(`In Notifications Controller - Getting All Notifications`);
 
@@ -83,7 +83,7 @@ async function createNotification(notification) {
     const result = await NotificationModel.createNotification(notification);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
     
 }
 
@@ -91,7 +91,7 @@ async function updateNotification(id, notification) {
 
     winston.info(`In Notifications Controller - Updating Notification with ID ${id}`);
 
-    if (typeof (await getNotificationById(id)) === "string") return `Notification with id ${id} not found`;
+    if ((await getNotificationById(id)).length === 0) return `Notification with id ${id} not found`;
     
     const validationResult = validateNotification(notification, 'newTemplate');
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
@@ -101,7 +101,7 @@ async function updateNotification(id, notification) {
     const result = await NotificationModel.updateNotification(id, notification);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
 
 }
 
@@ -111,11 +111,12 @@ async function deleteNotification(id) {
 
     const deletedNotification = await getNotificationById(id);
 
-    if (typeof deletedNotification === "string") return `Notification with id ${id} not found`;
+    if (deletedNotification.length === 0) return `Notification with id ${id} not found`;
 
     const result = await NotificationModel.deleteNotification(id);
 
-    return deletedNotification;
+    if (DB_Conn === Constants.DB_CONNS_PG) return deletedNotification;
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return [deletedNotification];
 
 }
 
@@ -127,7 +128,7 @@ async function sendNewNotification(notificationDetails) {
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     const notification = await getNotificationById(notificationDetails.notification_type);
-    if (typeof (notification) === "string") return `Error : Invalid Notification Type`;
+    if (notification.length === 0) return `Error : Invalid Notification Type`;
 
     const template = notification[0].template_body;
     const messageObject = {

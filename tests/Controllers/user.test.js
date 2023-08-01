@@ -34,7 +34,25 @@ test('User Test 1 - Create User', async () => {
         'password' : 'password.user1'
     });
 
-    expect(result).toMatch('1');
+    // expect(result).toMatch('1');
+    expect(result.length).toBe(1);
+
+    if (DB_Conn === Constants.DB_CONNS_PG) {
+        expect.arrayContaining([
+            expect.objectContaining({
+                id: '1'
+            })
+        ])
+    }
+
+    if (DB_Conn === Constants.DB_CONNS_MONGO) {
+        expect.arrayContaining([
+            expect.objectContaining({
+                _id: '1'
+            })
+        ])
+    }
+
 
 });
 

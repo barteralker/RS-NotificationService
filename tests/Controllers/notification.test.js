@@ -5,6 +5,7 @@ const DB_Conn = require('../../config/default.json').DB_CONN;
 const Constants = require('../../resources/constants');
 const tagController = require('../../Controllers/tag');
 const messageController = require('../../Controllers/message');
+const express = require('express');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var notificationModel = require('../../PostgresModels/notification'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var notificationModel = require('../../MongoModels/notification'); };
@@ -32,7 +33,7 @@ test('Notification Test 1 - Get All Notifications', async () => {
     if (DB_Conn === Constants.DB_CONNS_PG) { notificationModel.getAllNotifications = jest.fn().mockReturnValue({ 'rows' : ret}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getAllNotifications = jest.fn().mockReturnValue(ret); };
 
-    let result = await notificationController.getAllNotifications();
+    let result = await notificationController.getAllNotifications(express.request);
 
     expect(result).toEqual(
         expect.arrayContaining([
@@ -85,11 +86,11 @@ test('Notification Test 3 - Get Notification by Id (no results)', async () => {
     winston.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { notificationModel.getNotificationById = jest.fn().mockReturnValue({ 'rows' : []}); };
-    if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getNotificationById = jest.fn().mockReturnValue(null); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getNotificationById = jest.fn().mockReturnValue([]); };
 
     let result = await notificationController.getNotificationById(1);
 
-    expect(result).toMatch('does not exist');
+    expect(result).toStrictEqual([]);
 
 });
 
@@ -145,14 +146,30 @@ test('Notification Test 5 - Create Notification', async () => {
 
     let result = await notificationController.createNotification({
         'event_id' : 1,
-        'name' : 'Ntf1',
+        'name' : 'Ntf No. 1',
         'template_subject' : 'Notification No. 1',
         'template_body' : `Hello {user},
         
         This is {template1}`
     });
 
-    expect(result).toMatch('1');
+    expect(result.length).toBe(1);
+
+    if (DB_Conn === Constants.DB_CONNS_PG) {
+        expect.arrayContaining([
+            expect.objectContaining({
+                id: '1'
+            })
+        ])
+    }
+
+    if (DB_Conn === Constants.DB_CONNS_MONGO) {
+        expect.arrayContaining([
+            expect.objectContaining({
+                _id: '1'
+            })
+        ])
+    }
 
 });
 
@@ -160,18 +177,53 @@ test('Notification Test 6 - Update Notification', async () => {
 
     winston.info = jest.fn();
 
-    notificationController.getNotificationById = jest.fn().mockReturnValue({});
+    if (DB_Conn === Constants.DB_CONNS_PG) { notificationModel.getNotificationById = jest.fn().mockReturnValue({'rows' : [1]}); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getNotificationById = jest.fn().mockReturnValue([1]); };
+    
+    const retPg = {
+        'rows' : [{
+            'id' : 1,
+            'event_id' : 1,
+            'name' : 'Ntf No. 1',
+            'template_subject' : 'Notification No. 1',
+            'template_body' : `Hello {user},
+            
+            This is {template1}`
+        }]
+    }
 
-    notificationModel.updateNotification = jest.fn();
+    const retMng = {
+        '_id' : 1,
+        'event_id' : 1,
+        'name' : 'Ntf No. 1',
+        'template_subject' : 'Notification No. 1',
+        'template_body' : `Hello {user},
+        
+        This is {template1}`
+    }
+
+    if (DB_Conn === Constants.DB_CONNS_PG) { notificationModel.updateNotification = jest.fn().mockReturnValue(retPg); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.updateNotification = jest.fn().mockReturnValue(retMng); };
 
     tagController.createTags = jest.fn();
 
     let result = await notificationController.updateNotification(1, {
         'event_id' : 1,
-        'name' : 'Ntf1'
+        'name' : 'Ntf No. 1',
+        'template_subject' : 'Notification No. 1',
+        'template_body' : `Hello {user},
+        
+        This is {template1}`
+
     });
 
-    expect(result).toMatch('1');
+    expect(result).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({
+                name: 'Ntf No. 1'
+            })
+        ])
+    )
 
 });
 
@@ -179,7 +231,8 @@ test('Notification Test 7 - Update / Delete Notification (notification Id not fo
 
     winston.info = jest.fn();
 
-    notificationController.getNotificationById = jest.fn().mockReturnValue('not found');
+    if (DB_Conn === Constants.DB_CONNS_PG) { notificationModel.getNotificationById = jest.fn().mockReturnValue({'rows' : []}); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getNotificationById = jest.fn().mockReturnValue([]); };
 
     let resultUpdate = await notificationController.updateNotification(1, {
         'event_id' : 1,
@@ -234,7 +287,12 @@ test('Notification Test 9 - Send Notification', async () => {
         'receiver_email' : 'test_123@abc.com'
     });
 
-    expect(result).toMatch('test_123@abc.com');
+    expect(result).toEqual(
+        expect.objectContaining({
+            receiver_email: 'test_123@abc.com'
+        })
+    )
+
 
 });
 
@@ -274,7 +332,7 @@ test('Notification Test 11 - Send Notification (Notification Type does not exist
     winston.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { notificationModel.getNotificationById = jest.fn().mockReturnValue({ 'rows' : []}); };
-    if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getNotificationById = jest.fn().mockReturnValue(null); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getNotificationById = jest.fn().mockReturnValue([]); };
 
     messageController.createMessage = jest.fn();
 

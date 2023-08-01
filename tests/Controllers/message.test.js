@@ -3,6 +3,7 @@ const winston = require('winston');
 const messageController = require('../../Controllers/message');
 const DB_Conn = require('../../config/default.json').DB_CONN;
 const Constants = require('../../resources/constants');
+const express = require('express');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var messageModel = require('../../PostgresModels/message'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var messageModel = require('../../MongoModels/message'); };
@@ -24,7 +25,7 @@ test('Message Test 1 - Get All Messages', async () => {
     if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.getAllMessages = jest.fn().mockReturnValue({ 'rows' : ret}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getAllMessages = jest.fn().mockReturnValue(ret); };
 
-    let result = await messageController.getAllMessages();
+    let result = await messageController.getAllMessages(express.request);
 
     expect(result).toEqual(
         expect.arrayContaining([
@@ -74,11 +75,11 @@ test('Message Test 3 - Get Message by Id (no results)', async () => {
     winston.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.getMessageById = jest.fn().mockReturnValue({ 'rows' : []}); };
-    if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getMessageById = jest.fn().mockReturnValue(null); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getMessageById = jest.fn().mockReturnValue([]); };
 
     let result = await messageController.getMessageById(1);
 
-    expect(result).toMatch('does not exist');
+    expect(result).toStrictEqual([]);
 
 });
 
@@ -135,7 +136,24 @@ test('Message Test 5 - Create Message', async () => {
         'message_text' : 'Msg1'
     });
 
-    expect(result).toMatch('1');
+    expect(result.length).toBe(1);
+
+    if (DB_Conn === Constants.DB_CONNS_PG) {
+        expect.arrayContaining([
+            expect.objectContaining({
+                id: '1'
+            })
+        ])
+    }
+
+    if (DB_Conn === Constants.DB_CONNS_MONGO) {
+        expect.arrayContaining([
+            expect.objectContaining({
+                _id: '1'
+            })
+        ])
+    }
+
 
 });
 
@@ -143,16 +161,41 @@ test('Message Test 6 - Update Message', async () => {
 
     winston.info = jest.fn();
 
-    messageController.getMessageById = jest.fn().mockReturnValue({});
+    if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.getMessageById = jest.fn().mockReturnValue({'rows' : [1]}); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getMessageById = jest.fn().mockReturnValue([1]); };
 
-    messageModel.updateMessage = jest.fn();
+    const retPg = {
+        'rows' : [{
+            'id' : 1,
+            'notification_type' : 1,
+            "message_text": `Message no. 1`,
+            'timestamp' : '2023-07-31 08:02:21.000'
+        }]
+    }
+
+    const retMng = {
+        '_id' : 1,
+        'notification_type' : 1,
+        "message_text": `Message no. 1`,
+        'timestamp' : '2023-07-31 08:02:21.000'
+}
+    
+    if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.updateMessage = jest.fn().mockReturnValue(retPg); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.updateMessage = jest.fn().mockReturnValue(retMng); };
+
 
     let result = await messageController.updateMessage(1, {
         'notification_type' : 1,
-        'message_text' : 'Msg1'
+        'message_text' : 'Message no. 1'
     });
 
-    expect(result).toMatch('1');
+    expect(result).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({
+                message_text: 'Message no. 1'
+            })
+        ])
+    )
 
 });
 
@@ -160,7 +203,8 @@ test('Message Test 7 - Update / Delete Message (message Id not found)', async ()
 
     winston.info = jest.fn();
 
-    messageController.getMessageById = jest.fn().mockReturnValue('not found');
+    if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.getMessageById = jest.fn().mockReturnValue({'rows' : []}); };
+    if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getMessageById = jest.fn().mockReturnValue([]); };
 
     let resultUpdate = await messageController.updateMessage(1, {
         'notification_type' : 1,
