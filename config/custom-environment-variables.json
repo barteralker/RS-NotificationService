@@ -1,3 +1,4 @@
 {
-    "jwtPrivateKey" : "RS_NotSer_jwtPrivateKey"
+    "jwtPrivateKey" : "RS_NotSer_jwtPrivateKey",
+    "password" : "PGDBPassword"
 }

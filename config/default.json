@@ -7,7 +7,7 @@
         "user": "postgres",
         "host": "localhost",
         "database": "postgres",
-        "password": "postgres",
+        "password": "",
         "port": 5432
     },
     "jwtPrivateKey" : ""
