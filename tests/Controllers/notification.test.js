@@ -1,14 +1,14 @@
 
 const winston = require('winston');
-const notificationController = require('../../Controllers/notification');
+const notificationController = require('../../controllers/notification');
 const DB_Conn = require('../../config/default.json').DB_CONN;
 const Constants = require('../../resources/constants');
-const tagController = require('../../Controllers/tag');
-const messageController = require('../../Controllers/message');
+const tagController = require('../../controllers/tag');
+const messageController = require('../../controllers/message');
 const express = require('express');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var notificationModel = require('../../PostgresModels/notification'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var notificationModel = require('../../MongoModels/notification'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var notificationModel = require('../../modelsPG/notification'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var notificationModel = require('../../modelsMongo/notification'); };
 
 test('Notification Test 1 - Get All Notifications', async () => {
 

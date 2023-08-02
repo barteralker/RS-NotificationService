@@ -1,12 +1,12 @@
 
 const winston = require('winston');
-const applicationController = require('../../Controllers/application');
+const applicationController = require('../../controllers/application');
 const DB_Conn = require('../../config/default.json').DB_CONN;
 const Constants = require('../../resources/constants');
 const express = require('express');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../../PostgresModels/application'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../../MongoModels/application'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../../modelsPG/application'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../../modelsMongo/application'); };
 
 test('Application Test 1 - Get All Applications', async () => {
 

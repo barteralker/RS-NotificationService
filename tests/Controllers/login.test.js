@@ -1,14 +1,14 @@
 
 const winston = require('winston');
-const loginController = require('../../Controllers/login');
+const loginController = require('../../controllers/login');
 const DB_Conn = require('../../config/default.json').DB_CONN;
 const Constants = require('../../resources/constants');
 const bcrypt = require('bcrypt');
 const config = require('config');
-const userController = require('../../Controllers/user');
+const userController = require('../../controllers/user');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var loginModel = require('../../PostgresModels/login'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var loginModel = require('../../MongoModels/login'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var loginModel = require('../../modelsPG/login'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var loginModel = require('../../modelsMongo/login'); };
 
 test('Login Test 1 - Login (Normal Case)', async () => {
 

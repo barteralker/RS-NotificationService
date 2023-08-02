@@ -1,11 +1,11 @@
 
 const winston = require('winston');
-const userController = require('../../Controllers/user');
+const userController = require('../../controllers/user');
 const DB_Conn = require('../../config/default.json').DB_CONN;
 const Constants = require('../../resources/constants');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var userModel = require('../../PostgresModels/user'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var userModel = require('../../MongoModels/user'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var userModel = require('../../modelsPG/user'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var userModel = require('../../modelsMongo/user'); };
 
 test('User Test 1 - Create User', async () => {
 

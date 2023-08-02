@@ -1,12 +1,12 @@
 
 const winston = require('winston');
-const eventController = require('../../Controllers/event');
+const eventController = require('../../controllers/event');
 const DB_Conn = require('../../config/default.json').DB_CONN;
 const Constants = require('../../resources/constants');
 const express = require('express');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var eventModel = require('../../PostgresModels/event'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../../MongoModels/event'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var eventModel = require('../../modelsPG/event'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../../modelsMongo/event'); };
 
 test('Event Test 1 - Get All Events', async () => {
 

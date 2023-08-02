@@ -1,12 +1,12 @@
 
 const winston = require('winston');
-const messageController = require('../../Controllers/message');
+const messageController = require('../../controllers/message');
 const DB_Conn = require('../../config/default.json').DB_CONN;
 const Constants = require('../../resources/constants');
 const express = require('express');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var messageModel = require('../../PostgresModels/message'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var messageModel = require('../../MongoModels/message'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var messageModel = require('../../modelsPG/message'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var messageModel = require('../../modelsMongo/message'); };
 
 test('Message Test 1 - Get All Messages', async () => {
 

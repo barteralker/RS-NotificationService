@@ -1,6 +1,6 @@
 
 const winston = require('winston');
-const parser = require('../../Middleware/NotificationParser');
+const parser = require('../../utils/NotificationParser');
 
 test("Parser Test 1 - parseForTags1 - Normal String", () => {
 

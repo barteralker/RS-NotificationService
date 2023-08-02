@@ -2,10 +2,10 @@
 const winston = require('winston');
 const DB_Conn = require('../../config/default.json').DB_CONN;
 const Constants = require('../../resources/constants');
-const tagController = require('../../Controllers/tag');
+const tagController = require('../../controllers/tag');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var TagModel = require('../../PostgresModels/tag'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var TagModel = require('../../MongoModels/tag'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var TagModel = require('../../modelsPG/tag'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var TagModel = require('../../modelsMongo/tag'); };
 
 test('Tag Test 1 - Create Tags', async () => {
 
