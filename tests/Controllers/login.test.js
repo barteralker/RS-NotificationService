@@ -1,7 +1,8 @@
 
 const logger = require('../../startup/loggingSetup');
 const loginController = require('../../controllers/login');
-const DB_Conn = require('../../config/dev.json').DB_CONN;
+const config = require('config');
+const DB_Conn = require(`../../config/${config.get('instance')}.json`).DB_CONN;
 const Constants = require('../../resources/constants');
 const bcrypt = require('bcrypt');
 const config = require('config');

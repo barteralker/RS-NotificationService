@@ -1,5 +1,6 @@
 
-const schema = require(`../config/dev.json`).DB_Schema;
+const config = require('config');
+const schema = require(`../config/${config.get('instance')}.json`).DB_Schema;
 
 const CREATE_USER = `INSERT INTO ${schema}.user (name, email, password, application_id) VALUES ($1, $2, $3, $4) RETURNING id`;
 

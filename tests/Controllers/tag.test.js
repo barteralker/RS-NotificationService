@@ -1,6 +1,7 @@
 
 const logger = require('../../startup/loggingSetup');
-const DB_Conn = require('../../config/dev.json').DB_CONN;
+const config = require('config');
+const DB_Conn = require(`../../config/${config.get('instance')}.json`).DB_CONN;
 const Constants = require('../../resources/constants');
 const tagController = require('../../controllers/tag');
 
