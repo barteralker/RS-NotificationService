@@ -1,4 +1,5 @@
 {
     "jwtPrivateKey" : "RS_NotSer_jwtPrivateKey",
-    "password" : "PGDBPassword"
+    "password" : "PGDBPassword",
+    "instance" : "instance"
 }

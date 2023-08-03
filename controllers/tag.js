@@ -1,6 +1,6 @@
 
 const logger = require('../startup/loggingSetup');
-const DB_Conn = require('../config/dev.json').DB_CONN;
+const DB_Conn = require(`../config/dev.json`).DB_CONN;
 const Constants = require('../resources/constants');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var TagModel = require('../modelsPG/tag'); };

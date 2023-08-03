@@ -1,6 +1,6 @@
 
 const logger = require('../startup/loggingSetup');
-const DB_Conn = require('../config/dev.json').DB_CONN;
+const DB_Conn = require(`../config/dev.json`).DB_CONN;
 const Constants = require('../resources/constants');
 const Joi = require('joi');
 const utils = require('../utils/FilterUtils');
