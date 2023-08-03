@@ -11,12 +11,6 @@ CREATE SEQUENCE rs_notification_service.application_id_seq
 	START 1
 	CACHE 1
 	NO CYCLE;
-
--- Permissions
-
-ALTER SEQUENCE rs_notification_service.application_id_seq OWNER TO postgres;
-GRANT ALL ON SEQUENCE rs_notification_service.application_id_seq TO postgres;
-
 -- DROP SEQUENCE rs_notification_service.application_id_seq1;
 
 CREATE SEQUENCE rs_notification_service.application_id_seq1
@@ -26,12 +20,15 @@ CREATE SEQUENCE rs_notification_service.application_id_seq1
 	START 1
 	CACHE 1
 	NO CYCLE;
+-- DROP SEQUENCE rs_notification_service.logins_id_seq;
 
--- Permissions
-
-ALTER SEQUENCE rs_notification_service.application_id_seq1 OWNER TO postgres;
-GRANT ALL ON SEQUENCE rs_notification_service.application_id_seq1 TO postgres;
-
+CREATE SEQUENCE rs_notification_service.logins_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
 -- DROP SEQUENCE rs_notification_service.message_id_seq;
 
 CREATE SEQUENCE rs_notification_service.message_id_seq
@@ -41,12 +38,6 @@ CREATE SEQUENCE rs_notification_service.message_id_seq
 	START 1
 	CACHE 1
 	NO CYCLE;
-
--- Permissions
-
-ALTER SEQUENCE rs_notification_service.message_id_seq OWNER TO postgres;
-GRANT ALL ON SEQUENCE rs_notification_service.message_id_seq TO postgres;
-
 -- DROP SEQUENCE rs_notification_service.message_id_seq1;
 
 CREATE SEQUENCE rs_notification_service.message_id_seq1
@@ -56,12 +47,6 @@ CREATE SEQUENCE rs_notification_service.message_id_seq1
 	START 1
 	CACHE 1
 	NO CYCLE;
-
--- Permissions
-
-ALTER SEQUENCE rs_notification_service.message_id_seq1 OWNER TO postgres;
-GRANT ALL ON SEQUENCE rs_notification_service.message_id_seq1 TO postgres;
-
 -- DROP SEQUENCE rs_notification_service.newtable_id_seq;
 
 CREATE SEQUENCE rs_notification_service.newtable_id_seq
@@ -71,12 +56,6 @@ CREATE SEQUENCE rs_notification_service.newtable_id_seq
 	START 1
 	CACHE 1
 	NO CYCLE;
-
--- Permissions
-
-ALTER SEQUENCE rs_notification_service.newtable_id_seq OWNER TO postgres;
-GRANT ALL ON SEQUENCE rs_notification_service.newtable_id_seq TO postgres;
-
 -- DROP SEQUENCE rs_notification_service.notification_id_seq;
 
 CREATE SEQUENCE rs_notification_service.notification_id_seq
@@ -86,12 +65,6 @@ CREATE SEQUENCE rs_notification_service.notification_id_seq
 	START 1
 	CACHE 1
 	NO CYCLE;
-
--- Permissions
-
-ALTER SEQUENCE rs_notification_service.notification_id_seq OWNER TO postgres;
-GRANT ALL ON SEQUENCE rs_notification_service.notification_id_seq TO postgres;
-
 -- DROP SEQUENCE rs_notification_service.notification_id_seq1;
 
 CREATE SEQUENCE rs_notification_service.notification_id_seq1
@@ -101,12 +74,24 @@ CREATE SEQUENCE rs_notification_service.notification_id_seq1
 	START 1
 	CACHE 1
 	NO CYCLE;
+-- DROP SEQUENCE rs_notification_service.tag_id_seq;
 
--- Permissions
+CREATE SEQUENCE rs_notification_service.tag_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+-- DROP SEQUENCE rs_notification_service.user_id_seq;
 
-ALTER SEQUENCE rs_notification_service.notification_id_seq1 OWNER TO postgres;
-GRANT ALL ON SEQUENCE rs_notification_service.notification_id_seq1 TO postgres;
--- rs_notification_service.application definition
+CREATE SEQUENCE rs_notification_service.user_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;-- rs_notification_service.application definition
 
 -- Drop table
 
@@ -118,11 +103,6 @@ CREATE TABLE rs_notification_service.application (
 	description varchar NULL,
 	CONSTRAINT application_pk PRIMARY KEY (id)
 );
-
--- Permissions
-
-ALTER TABLE rs_notification_service.application OWNER TO postgres;
-GRANT ALL ON TABLE rs_notification_service.application TO postgres;
 
 
 -- rs_notification_service.tag definition
@@ -137,11 +117,6 @@ CREATE TABLE rs_notification_service.tag (
 	CONSTRAINT tag_pk PRIMARY KEY (id),
 	CONSTRAINT tag_un UNIQUE (tag_name)
 );
-
--- Permissions
-
-ALTER TABLE rs_notification_service.tag OWNER TO postgres;
-GRANT ALL ON TABLE rs_notification_service.tag TO postgres;
 
 
 -- rs_notification_service."event" definition
@@ -158,11 +133,6 @@ CREATE TABLE rs_notification_service."event" (
 	CONSTRAINT newtable_pk PRIMARY KEY (id),
 	CONSTRAINT newtable_fk FOREIGN KEY (application_id) REFERENCES rs_notification_service.application(id)
 );
-
--- Permissions
-
-ALTER TABLE rs_notification_service."event" OWNER TO postgres;
-GRANT ALL ON TABLE rs_notification_service."event" TO postgres;
 
 
 -- rs_notification_service.notification definition
@@ -181,11 +151,6 @@ CREATE TABLE rs_notification_service.notification (
 	CONSTRAINT notification_fk FOREIGN KEY (event_id) REFERENCES rs_notification_service."event"(id)
 );
 
--- Permissions
-
-ALTER TABLE rs_notification_service.notification OWNER TO postgres;
-GRANT ALL ON TABLE rs_notification_service.notification TO postgres;
-
 
 -- rs_notification_service."user" definition
 
@@ -203,11 +168,6 @@ CREATE TABLE rs_notification_service."user" (
 	CONSTRAINT user_fk FOREIGN KEY (application_id) REFERENCES rs_notification_service.application(id)
 );
 
--- Permissions
-
-ALTER TABLE rs_notification_service."user" OWNER TO postgres;
-GRANT ALL ON TABLE rs_notification_service."user" TO postgres;
-
 
 -- rs_notification_service.login definition
 
@@ -222,11 +182,6 @@ CREATE TABLE rs_notification_service.login (
 	CONSTRAINT logins_pk PRIMARY KEY (id),
 	CONSTRAINT logins_fk FOREIGN KEY (user_id) REFERENCES rs_notification_service."user"(id)
 );
-
--- Permissions
-
-ALTER TABLE rs_notification_service.login OWNER TO postgres;
-GRANT ALL ON TABLE rs_notification_service.login TO postgres;
 
 
 -- rs_notification_service.message definition
@@ -243,15 +198,3 @@ CREATE TABLE rs_notification_service.message (
 	CONSTRAINT message_pk PRIMARY KEY (id),
 	CONSTRAINT message_fk FOREIGN KEY (notification_type) REFERENCES rs_notification_service.notification(id)
 );
-
--- Permissions
-
-ALTER TABLE rs_notification_service.message OWNER TO postgres;
-GRANT ALL ON TABLE rs_notification_service.message TO postgres;
-
-
-
-
--- Permissions
-
-GRANT ALL ON SCHEMA rs_notification_service TO postgres;
