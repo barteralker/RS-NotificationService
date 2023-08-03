@@ -1,6 +1,6 @@
 
 const winston = require('winston');
-const DB_Conn = require('../../config/default.json').DB_CONN;
+const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
 const tagController = require('../../controllers/tag');
 

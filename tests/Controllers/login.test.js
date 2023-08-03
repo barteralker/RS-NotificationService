@@ -1,7 +1,7 @@
 
 const winston = require('winston');
 const loginController = require('../../controllers/login');
-const DB_Conn = require('../../config/default.json').DB_CONN;
+const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
 const bcrypt = require('bcrypt');
 const config = require('config');

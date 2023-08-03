@@ -1,7 +1,7 @@
 
 const winston = require('winston');
 const userController = require('../../controllers/user');
-const DB_Conn = require('../../config/default.json').DB_CONN;
+const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var userModel = require('../../modelsPG/user'); };

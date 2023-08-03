@@ -1,4 +1,4 @@
-const schema = require('../config/default.json').DB_Schema;
+const schema = require('../config/dev.json').DB_Schema;
 
 const GET_ALL_APPLICATIONS = `SELECT * FROM ${schema}.application`;
 

@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose');
-const schemaName = require('../config/default.json').DB_Schema;
-const DB_Conn = require('../config/default.json').DB_CONN;
+const schemaName = require('../config/dev.json').DB_Schema;
+const DB_Conn = require('../config/dev.json').DB_CONN;
 const winston = require('winston');
 const Constants = require('../resources/constants');
 
