@@ -1,18 +1,71 @@
 
-const fs = require('fs');
+const winston = require('winston')
 
-module.exports = (winston) => {
-
-    winston.add(new winston.transports.File({ filename: './logs/logs.log' , options: { flags: 'w' } }));
-
-    process.on('uncaughtException', (exp) => {
-        winston.error('UNCAUGHT EXCEPTION');
-        winston.error(exp.message, exp);
-    });
-    
-    process.on('unhandledRejection', (exp) => {
-        winston.error('UNHADLED PROMISE REJECTION');
-        winston.error(exp.message, exp);
-    });
-    
+dateFormat = () => {
+    return new Date(Date.now()).toUTCString(); 
 }
+
+class LoggerService {
+
+    constructor(route) {
+
+        this.log_data = null;
+        this.traceId = '';
+        this.route = route;
+        
+        const logger = winston.createLogger({
+            transports: [
+                new winston.transports.File({
+                filename: `./logs/${route}.log`
+                // , options: { flags: 'w' } 
+                })
+            ],
+            format: winston.format.printf((info) => {
+                let message = `${dateFormat()} | ${info.level.toUpperCase()}${this.traceId !== '' ? ` | ${this.traceId}` : ``} | ${info.message}`
+                message = info.obj ? message + ` | data:${JSON.stringify(info.obj)}` : message
+                message = this.log_data ? message + ` | log_data:${JSON.stringify(this.log_data)}` : message
+                return message
+            })
+        });
+
+        this.logger = logger;
+        
+    }
+
+    setLogData(traceId, log_data) {
+        this.traceId = traceId;
+        this.log_data = log_data;
+    }
+
+    async info(message) {
+        this.logger.log('info', message);
+    }
+
+    async info(message, obj) {
+        this.logger.log('info', message, {
+            obj
+        })
+    }
+
+    async debug(message) {
+        this.logger.log('debug', message);
+    }
+
+    async debug(message, obj) {
+        this.logger.log('debug', message, {
+            obj
+        })
+    }
+
+    async error(message) {
+        this.logger.log('error', message);
+    }
+
+    async error(message, obj) {
+        this.logger.log('error', message, {
+            obj
+        })
+    }
+}
+
+module.exports = new LoggerService('logs');
