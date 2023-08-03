@@ -4,6 +4,8 @@ const app = express();
 const config = require('config');
 const logger = require('./startup/loggingSetup');
 
+require(`./config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN')
+
 require('express-async-errors');
 require('./startup/middlewareSetup')(app);
 require('./startup/jwtSetup')();
