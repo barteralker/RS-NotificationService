@@ -1,0 +1,12 @@
+
+export dbConnection=postgres
+    this can be either postgres or mongo
+
+export instance=test
+    this can be either test or dev (or the name of another config file that exists in config folder like prod)
+
+export PGDBPassword=
+    set this to the postgres DB password
+
+export RS_NotSer_jwtPrivateKey=
+    jwt Private Key
