@@ -1,5 +1,5 @@
 
-const logger = require('../startup/loggingSetup');
+const logger = require('../../startup/loggingSetup');
 const notificationController = require('../../controllers/notification');
 const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
