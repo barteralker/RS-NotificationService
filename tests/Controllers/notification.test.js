@@ -1,5 +1,5 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const notificationController = require('../../controllers/notification');
 const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
@@ -12,7 +12,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var notificationModel = require('../
 
 test('Notification Test 1 - Get All Notifications', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'event_id' : 1,
@@ -55,7 +55,7 @@ test('Notification Test 1 - Get All Notifications', async () => {
 
 test('Notification Test 2 - Get Notification by Id', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'event_id' : 1,
@@ -83,7 +83,7 @@ test('Notification Test 2 - Get Notification by Id', async () => {
 
 test('Notification Test 3 - Get Notification by Id (no results)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { notificationModel.getNotificationById = jest.fn().mockReturnValue({ 'rows' : []}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getNotificationById = jest.fn().mockReturnValue([]); };
@@ -96,7 +96,7 @@ test('Notification Test 3 - Get Notification by Id (no results)', async () => {
 
 test('Notification Test 4 - Fail Notification Validation', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{
@@ -127,7 +127,7 @@ test('Notification Test 4 - Fail Notification Validation', async () => {
 
 test('Notification Test 5 - Create Notification', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{
@@ -175,7 +175,7 @@ test('Notification Test 5 - Create Notification', async () => {
 
 test('Notification Test 6 - Update Notification', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { notificationModel.getNotificationById = jest.fn().mockReturnValue({'rows' : [1]}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getNotificationById = jest.fn().mockReturnValue([1]); };
@@ -229,7 +229,7 @@ test('Notification Test 6 - Update Notification', async () => {
 
 test('Notification Test 7 - Update / Delete Notification (notification Id not found)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { notificationModel.getNotificationById = jest.fn().mockReturnValue({'rows' : []}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getNotificationById = jest.fn().mockReturnValue([]); };
@@ -248,7 +248,7 @@ test('Notification Test 7 - Update / Delete Notification (notification Id not fo
 
 test('Notification Test 8 - Delete Notification', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     notificationController.getNotificationById = jest.fn().mockReturnValue({});
 
@@ -262,7 +262,7 @@ test('Notification Test 8 - Delete Notification', async () => {
 
 test('Notification Test 9 - Send Notification', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'event_id' : 1,
@@ -298,7 +298,7 @@ test('Notification Test 9 - Send Notification', async () => {
 
 test('Notification Test 10 - Send Notification (Validation Failed)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     let result1 = await notificationController.sendNewNotification({
         'tags' : {
@@ -329,7 +329,7 @@ test('Notification Test 10 - Send Notification (Validation Failed)', async () =>
 
 test('Notification Test 11 - Send Notification (Notification Type does not exist)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { notificationModel.getNotificationById = jest.fn().mockReturnValue({ 'rows' : []}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { notificationModel.getNotificationById = jest.fn().mockReturnValue([]); };
@@ -351,7 +351,7 @@ test('Notification Test 11 - Send Notification (Notification Type does not exist
 
 test('Notification Test 12 - Send Notification (Inconsistent Tags)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'event_id' : 1,

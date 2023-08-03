@@ -1,5 +1,5 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const messageController = require('../../controllers/message');
 const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
@@ -10,7 +10,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var messageModel = require('../../mo
 
 test('Message Test 1 - Get All Messages', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'notification_type' : 1,
@@ -47,7 +47,7 @@ test('Message Test 1 - Get All Messages', async () => {
 
 test('Message Test 2 - Get Message by Id', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'notification_type' : 1,
@@ -72,7 +72,7 @@ test('Message Test 2 - Get Message by Id', async () => {
 
 test('Message Test 3 - Get Message by Id (no results)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.getMessageById = jest.fn().mockReturnValue({ 'rows' : []}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getMessageById = jest.fn().mockReturnValue([]); };
@@ -85,7 +85,7 @@ test('Message Test 3 - Get Message by Id (no results)', async () => {
 
 test('Message Test 4 - Fail Message Validation', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{
@@ -116,7 +116,7 @@ test('Message Test 4 - Fail Message Validation', async () => {
 
 test('Message Test 5 - Create Message', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{
@@ -159,7 +159,7 @@ test('Message Test 5 - Create Message', async () => {
 
 test('Message Test 6 - Update Message', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.getMessageById = jest.fn().mockReturnValue({'rows' : [1]}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getMessageById = jest.fn().mockReturnValue([1]); };
@@ -201,7 +201,7 @@ test('Message Test 6 - Update Message', async () => {
 
 test('Message Test 7 - Update / Delete Message (message Id not found)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { messageModel.getMessageById = jest.fn().mockReturnValue({'rows' : []}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { messageModel.getMessageById = jest.fn().mockReturnValue([]); };
@@ -220,7 +220,7 @@ test('Message Test 7 - Update / Delete Message (message Id not found)', async ()
 
 test('Message Test 8 - Delete Message', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     messageController.getMessageById = jest.fn().mockReturnValue({});
 

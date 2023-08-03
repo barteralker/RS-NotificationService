@@ -1,5 +1,5 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const eventController = require('../../controllers/event');
 const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
@@ -10,7 +10,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../../mode
 
 test('Event Test 1 - Get All Events', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'application_id' : 1,
@@ -47,7 +47,7 @@ test('Event Test 1 - Get All Events', async () => {
 
 test('Event Test 2 - Get Event by Id', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'application_id' : 1,
@@ -72,7 +72,7 @@ test('Event Test 2 - Get Event by Id', async () => {
 
 test('Event Test 3 - Get Event by Id (no results)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { eventModel.getEventById = jest.fn().mockReturnValue({ 'rows' : []}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { eventModel.getEventById = jest.fn().mockReturnValue([]); };
@@ -85,7 +85,7 @@ test('Event Test 3 - Get Event by Id (no results)', async () => {
 
 test('Event Test 4 - Fail Event Validation', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{
@@ -116,7 +116,7 @@ test('Event Test 4 - Fail Event Validation', async () => {
 
 test('Event Test 5 - Create Event', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{
@@ -158,7 +158,7 @@ test('Event Test 5 - Create Event', async () => {
 
 test('Event Test 6 - Update Event', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { eventModel.getEventById = jest.fn().mockReturnValue({'rows' : [1]}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { eventModel.getEventById = jest.fn().mockReturnValue([1]); };
@@ -199,7 +199,7 @@ test('Event Test 6 - Update Event', async () => {
 
 test('Event Test 7 - Update / Delete Event (event Id not found)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { eventModel.getEventById = jest.fn().mockReturnValue({'rows' : []}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { eventModel.getEventById = jest.fn().mockReturnValue([]); };
@@ -218,7 +218,7 @@ test('Event Test 7 - Update / Delete Event (event Id not found)', async () => {
 
 test('Event Test 8 - Delete Event', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{

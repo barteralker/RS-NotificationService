@@ -1,34 +1,38 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const Message = require('../mongooseCollections/message').Message;
 
-async function getAllMessages() {
+async function getAllMessages(tid) {
 
-    winston.info(`In Messages Model - Getting All Messages`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Getting All Messages`);
 
     return (await Message.find());
 
 }
 
-async function getFilteredMessages(filters) {
+async function getFilteredMessages(filters, tid) {
 
-    winston.info(`In Messages Model - Getting Filtered Messages`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Getting Filtered Messages`);
 
     return (await Message.find(filters));
 
 }
 
-async function getMessageById(id) {
+async function getMessageById(id, tid) {
 
-    winston.info(`In Messages Model - Getting Message with ID ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Getting Message with ID ${id}`);
 
     return (await Message.findById(id));
 
 }
 
-async function createMessage(message) {
+async function createMessage(message, tid) {
 
-    winston.info(`In Messages Model - Creating New Message`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Creating New Message`);
 
     const mongoMessage = new Message({
         message_text : message.message_text,
@@ -39,9 +43,10 @@ async function createMessage(message) {
 
 }
 
-async function updateMessage(id, message) {
+async function updateMessage(id, message, tid) {
 
-    winston.info(`In Messages Model - Updating Message with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Updating Message with ID : ${id}`);
 
     return (await Message.findByIdAndUpdate(id, {
         message_text : message.message_text,
@@ -50,9 +55,10 @@ async function updateMessage(id, message) {
 
 }
 
-async function deleteMessage(id) {
+async function deleteMessage(id, tid) {
 
-    winston.info(`In Messages Model - Deleting Message with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Deleting Message with ID : ${id}`);
 
     return (await Message.findByIdAndDelete(id));
 

@@ -1,13 +1,13 @@
 
 const jwt = require('jsonwebtoken');
 const config = require('config');
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 
 module.exports = (req, res, next) => {
 
     const token = req.header('x-auth-token');
 
-    winston.info('Authenticating Token')
+    logger.info('Authenticating Token')
 
     if (!token) return res.status(400).send('No Token Found');
 
@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
     }
 
     catch (err) {
-        winston.info('Invalid Token Found')
+        logger.info('Invalid Token Found')
         res.status(401).send('Invalid Token');
     }
 

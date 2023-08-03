@@ -1,4 +1,4 @@
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const DB_Conn = require('../config/dev.json').DB_CONN;
 const Constants = require('../resources/constants');
 const Joi = require('joi');
@@ -7,9 +7,10 @@ const bcrypt = require('bcrypt');
 if (DB_Conn === Constants.DB_CONNS_PG) { var userModel = require('../modelsPG/user'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var userModel = require('../modelsMongo/user'); };
 
-function validateUser(body) {
+function validateUser(body, tid) {
 
-    winston.info('Validating User Input');
+    logger.setTraceId(tid);
+    logger.info('Validating User Input');
     const schema = Joi.object({
         
         name: Joi.string().required().min(5).max(25),
@@ -23,9 +24,10 @@ function validateUser(body) {
 
 };
 
-async function createUser(user) {
+async function createUser(user, tid) {
 
-    winston.info(`In Users Controller - Creating New User`);
+    logger.setTraceId(tid);
+    logger.info(`In Users Controller - Creating New User`);
 
     const validationResult = validateUser(user);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
@@ -48,22 +50,24 @@ async function createUser(user) {
     
 }
 
-async function checkUserExistence(user) {
+async function checkUserExistence(user, tid) {
 
-    winston.info(`In Users Controller - Checking if User exists`);
+    logger.setTraceId(tid);
+    logger.info(`In Users Controller - Checking if User exists`);
 
-    result = await userModel.getUser(user);
+    result = await userModel.getUser(user, tid);
     
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows.length > 0;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result.length > 0;
 
 }
 
-async function getUser(user) {
+async function getUser(user, tid) {
 
-    winston.info(`In Users Controller - Getting User`);
+    logger.setTraceId(tid);
+    logger.info(`In Users Controller - Getting User`);
 
-    result = await userModel.getUser(user);
+    result = await userModel.getUser(user, tid);
     
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;

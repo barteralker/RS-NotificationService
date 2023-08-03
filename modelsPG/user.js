@@ -1,11 +1,12 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const pg = require('../dbConnections/pgConnection');
 const queries = require('../postgresQueries/user');
 
-async function createUser(user) {
+async function createUser(user, tid) {
 
-    winston.info(`In Users Model - Creating New User`);
+    logger.setTraceId(tid);
+    logger.info(`In Users Model - Creating New User`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -20,9 +21,10 @@ async function createUser(user) {
 
 }
 
-async function getUser(user) {
+async function getUser(user, tid) {
 
-    winston.info(`In Users Model - Getting User`);
+    logger.setTraceId(tid);
+    logger.info(`In Users Model - Getting User`);
 
     pool = new pg.Pool(pg.credentials);
 

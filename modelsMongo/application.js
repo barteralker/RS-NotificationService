@@ -1,34 +1,38 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const Application = require('../mongooseCollections/application').Application;
 
-async function getAllApplications() {
+async function getAllApplications(tid) {
 
-    winston.info(`In Applications Model - Getting All Applications`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Getting All Applications`);
 
     return (await Application.find());
 
 }
 
-async function getFilteredApplications(filters) {
+async function getFilteredApplications(filters, tid) {
 
-    winston.info(`In Applications Model - Getting Filtered Applications`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Getting Filtered Applications`);
 
     return (await Application.find(filters));
 
 }
 
-async function getApplicationById(id) {
+async function getApplicationById(id, tid) {
 
-    winston.info(`In Applications Model - Getting Application with ID ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Getting Application with ID ${id}`);
 
     return (await Application.findById(id));
 
 }
 
-async function createApplication(application) {
+async function createApplication(application, tid) {
 
-    winston.info(`In Applications Model - Creating New Application`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Creating New Application`);
 
     const mongoApplication = new Application({
         name : application.name,
@@ -39,9 +43,10 @@ async function createApplication(application) {
 
 }
 
-async function updateApplication(id, application) {
+async function updateApplication(id, application, tid) {
 
-    winston.info(`In Applications Model - Updating Application with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Updating Application with ID : ${id}`);
 
     return (await Application.findByIdAndUpdate(id, {
         name : application.name,
@@ -50,9 +55,10 @@ async function updateApplication(id, application) {
 
 }
 
-async function deleteApplication(id) {
+async function deleteApplication(id, tid) {
 
-    winston.info(`In Applications Model - Deleting Application with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Deleting Application with ID : ${id}`);
 
     return (await Application.findByIdAndDelete(id));
 

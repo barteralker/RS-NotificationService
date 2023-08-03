@@ -1,11 +1,12 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const pg = require('../dbConnections/pgConnection');
 const queries = require('../postgresQueries/login');
 
-async function createLogin(user_id) {
+async function createLogin(user_id, tid) {
 
-    winston.info(`In Logins Model - Creating New Login`);
+    logger.setTraceId(tid);
+    logger.info(`In Logins Model - Creating New Login`);
 
     pool = new pg.Pool(pg.credentials);
 

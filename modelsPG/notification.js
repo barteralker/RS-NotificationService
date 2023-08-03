@@ -1,16 +1,18 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const pg = require('../dbConnections/pgConnection');
 const queries = require('../postgresQueries/notification');
 
-async function getAllNotifications() {
+async function getAllNotifications(tid) {
 
-    winston.info(`In Notifications Model - Getting All Notifications`);
+    logger.setTraceId(tid);
+    logger.info(`In Notifications Model - Getting All Notifications`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.GET_ALL_NOTIFICATIONS;
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
 
     const result = await pool.query(querySQl);
 
@@ -20,9 +22,10 @@ async function getAllNotifications() {
 
 }
 
-async function getFilteredNotifications(appendee) {
+async function getFilteredNotifications(appendee, tid) {
 
-    winston.info(`In Notifications Model - Getting Filtered Notifications`);
+    logger.setTraceId(tid);
+    logger.info(`In Notifications Model - Getting Filtered Notifications`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -35,16 +38,18 @@ async function getFilteredNotifications(appendee) {
 
 }
 
-async function getNotificationById(id) {
+async function getNotificationById(id, tid) {
 
-    winston.info(`In Notifications Model - Getting Notification with ID ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Notifications Model - Getting Notification with ID ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.GET_NOTIFICATION_BY_ID;
     const values = [id];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();
@@ -53,16 +58,18 @@ async function getNotificationById(id) {
 
 }
 
-async function createNotification(notification) {
+async function createNotification(notification, tid) {
 
-    winston.info(`In Notifications Model - Creating New Notification`);
+    logger.setTraceId(tid);
+    logger.info(`In Notifications Model - Creating New Notification`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.CREATE_NOTIFICATION;
     const values = [notification.event_id, notification.name, notification.template_subject, notification.template_body];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();
@@ -71,16 +78,18 @@ async function createNotification(notification) {
 
 }
 
-async function updateNotification(id, notification) {
+async function updateNotification(id, notification, tid) {
 
-    winston.info(`In Notifications Model - Updating Notification with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Notifications Model - Updating Notification with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.UPDATE_NOTIFICATION;
     const values = [notification.event_id, notification.name, notification.template_subject, notification.template_body, id];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();   
@@ -89,16 +98,18 @@ async function updateNotification(id, notification) {
 
 }
 
-async function deleteNotification(id) {
+async function deleteNotification(id, tid) {
 
-    winston.info(`In Notifications Model - Deleting Notification with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Notifications Model - Deleting Notification with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.DELETE_NOTIFICATION;
     const values = [id];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();   

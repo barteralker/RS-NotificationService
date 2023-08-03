@@ -1,16 +1,18 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const pg = require('../dbConnections/pgConnection');
 const queries = require('../postgresQueries/message');
 
-async function getAllMessages() {
+async function getAllMessages(tid) {
 
-    winston.info(`In Messages Model - Getting All Messages`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Getting All Messages`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.GET_ALL_MESSAGES;
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
 
     const result = await pool.query(querySQl);
 
@@ -20,9 +22,10 @@ async function getAllMessages() {
 
 }
 
-async function getFilteredMessages(appendee) {
+async function getFilteredMessages(appendee, tid) {
 
-    winston.info(`In Messages Model - Getting Filtered Messages`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Getting Filtered Messages`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -35,16 +38,18 @@ async function getFilteredMessages(appendee) {
 
 }
 
-async function getMessageById(id) {
+async function getMessageById(id, tid) {
 
-    winston.info(`In Messages Model - Getting Message with ID ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Getting Message with ID ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.GET_MESSAGE_BY_ID;
     const values = [id];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();
@@ -53,16 +58,18 @@ async function getMessageById(id) {
 
 }
 
-async function createMessage(message) {
+async function createMessage(message, tid) {
 
-    winston.info(`In Messages Model - Creating New Message`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Creating New Message`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.CREATE_MESSAGE;
     const values = [message.message_text, message.notification_type, message.timestamp];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();
@@ -71,16 +78,18 @@ async function createMessage(message) {
 
 }
 
-async function updateMessage(id, message) {
+async function updateMessage(id, message, tid) {
 
-    winston.info(`In Messages Model - Updating Message with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Updating Message with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.UPDATE_MESSAGE;
     const values = [message.message_text, message.notification_type, message.timestamp, id];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();   
@@ -89,16 +98,18 @@ async function updateMessage(id, message) {
 
 }
 
-async function deleteMessage(id) {
+async function deleteMessage(id, tid) {
 
-    winston.info(`In Messages Model - Deleting Message with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Messages Model - Deleting Message with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.DELETE_MESSAGE;
     const values = [id];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();   

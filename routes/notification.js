@@ -5,40 +5,41 @@ routerApp.use(express.json());
 const notificationController = require('../controllers/notification');
 const auth = require('../Middleware/Authenticator');
 const log = require('../Middleware/Logger');
+const traceIdGen = require('../utils/TraceIdGenerator');
 
 routerApp.get('/', log, async (req, res) => {
 
-    res.send(await notificationController.getAllNotifications(req)); 
+    res.send(await notificationController.getAllNotifications(req, traceIdGen.getTraceId())); 
 
 });
 
 routerApp.get('/:id', log, async (req, res) => {
 
-    res.send(await notificationController.getNotificationById(req.params.id)); 
+    res.send(await notificationController.getNotificationById(req.params.id, traceIdGen.getTraceId())); 
 
 });
 
 routerApp.post('', [log, auth], async (req, res) => {
 
-    res.send(await notificationController.createNotification(req.body)); 
+    res.send(await notificationController.createNotification(req.body, traceIdGen.getTraceId())); 
 
 });
 
 routerApp.put('/:id', [log, auth], async (req, res) => {
 
-    res.send(await notificationController.updateNotification(req.params.id, req.body)); 
+    res.send(await notificationController.updateNotification(req.params.id, req.body, traceIdGen.getTraceId())); 
 
 });
 
 routerApp.delete('/:id', [log, auth], async (req, res) => {
 
-    res.send(await notificationController.deleteNotification(req.params.id)); 
+    res.send(await notificationController.deleteNotification(req.params.id, traceIdGen.getTraceId())); 
 
 });
 
 routerApp.post('/send', [log, auth], async (req, res) => {
 
-    res.send(await notificationController.sendNewNotification(req.body))
+    res.send(await notificationController.sendNewNotification(req.body, traceIdGen.getTraceId()))
 
 })
 

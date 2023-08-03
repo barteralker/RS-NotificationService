@@ -1,4 +1,6 @@
 
+const logger = require('../startup/loggingSetup');
+
 module.exports = () => {
 
     process.on('uncaughtException', (exp) => {

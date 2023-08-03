@@ -1,10 +1,11 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const Login = require('../mongooseCollections/login').Login;
 
-async function createLogin(user_id) {
+async function createLogin(user_id, tid) {
 
-    winston.info(`In Logins Model - Creating New Login`);
+    logger.setTraceId(tid);
+    logger.info(`In Logins Model - Creating New Login`);
 
     const mongoLogin = new Login({
         user_id: user_id

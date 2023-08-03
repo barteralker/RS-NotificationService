@@ -1,34 +1,38 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const Event = require('../mongooseCollections/event').Event;
 
-async function getAllEvents() {
+async function getAllEvents(tid) {
 
-    winston.info(`In Events Model - Getting All Events`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Getting All Events`);
 
     return (await Event.find());
 
 }
 
-async function getFilteredEvents(filters) {
+async function getFilteredEvents(filters, tid) {
 
-    winston.info(`In Events Model - Getting Filtered Events`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Getting Filtered Events`);
 
     return (await Event.find(filters));
 
 }
 
-async function getEventById(id) {
+async function getEventById(id, tid) {
 
-    winston.info(`In Events Model - Getting Event with ID ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Getting Event with ID ${id}`);
 
     return (await Event.findById(id));
 
 }
 
-async function createEvent(event) {
+async function createEvent(event, tid) {
 
-    winston.info(`In Events Model - Creating New Event`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Creating New Event`);
 
     const mongoEvent = new Event({
         name : event.name,
@@ -40,9 +44,10 @@ async function createEvent(event) {
 
 }
 
-async function updateEvent(id, event) {
+async function updateEvent(id, event, tid) {
 
-    winston.info(`In Events Model - Updating Event with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Updating Event with ID : ${id}`);
 
     return (await Event.findByIdAndUpdate(id, {
         name : event.name,
@@ -52,9 +57,10 @@ async function updateEvent(id, event) {
 
 }
 
-async function deleteEvent(id) {
+async function deleteEvent(id, tid) {
 
-    winston.info(`In Events Model - Deleting Event with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Deleting Event with ID : ${id}`);
 
     return (await Event.findByIdAndDelete(id));
 

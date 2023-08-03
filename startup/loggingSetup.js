@@ -1,5 +1,5 @@
 
-const winston = require('winston')
+const winston = require('winston');
 
 dateFormat = () => {
     return new Date(Date.now()).toUTCString(); 
@@ -9,7 +9,6 @@ class LoggerService {
 
     constructor(route) {
 
-        this.log_data = null;
         this.traceId = '';
         this.route = route;
         
@@ -17,24 +16,22 @@ class LoggerService {
             transports: [
                 new winston.transports.File({
                 filename: `./logs/${route}.log`
-                // , options: { flags: 'w' } 
+                , options: { flags: 'w' } 
                 })
             ],
             format: winston.format.printf((info) => {
                 let message = `${dateFormat()} | ${info.level.toUpperCase()}${this.traceId !== '' ? ` | ${this.traceId}` : ``} | ${info.message}`
                 message = info.obj ? message + ` | data:${JSON.stringify(info.obj)}` : message
-                message = this.log_data ? message + ` | log_data:${JSON.stringify(this.log_data)}` : message
                 return message
             })
         });
 
         this.logger = logger;
-        
+
     }
 
-    setLogData(traceId, log_data) {
+    setTraceId(traceId) {
         this.traceId = traceId;
-        this.log_data = log_data;
     }
 
     async info(message) {

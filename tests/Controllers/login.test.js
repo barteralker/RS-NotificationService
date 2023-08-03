@@ -1,5 +1,5 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const loginController = require('../../controllers/login');
 const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
@@ -12,7 +12,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var loginModel = require('../../mode
 
 test('Login Test 1 - Login (Normal Case)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = [{
         'id' : 1,
@@ -43,7 +43,7 @@ test('Login Test 1 - Login (Normal Case)', async () => {
 
 test('Login Test 2 - Login (Failing Validation)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     let result = await loginController.login({
         'email' : 'login1@test.com',
@@ -70,7 +70,7 @@ test('Login Test 2 - Login (Failing Validation)', async () => {
 
 test('Login Test 3 - Login (User does not exist)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     userController.getUser = jest.fn().mockReturnValue([]);
 
@@ -90,7 +90,7 @@ test('Login Test 3 - Login (User does not exist)', async () => {
 
 test('Login Test 4 - Login (Password Mismatch)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     bcrypt.compare = jest.fn().mockReturnValue(false);
 

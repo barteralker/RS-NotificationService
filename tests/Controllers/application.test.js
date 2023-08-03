@@ -1,5 +1,5 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const applicationController = require('../../controllers/application');
 const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
@@ -10,7 +10,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../.
 
 test('Application Test 1 - Get All Applications', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'name' : 'App1',
@@ -45,7 +45,7 @@ test('Application Test 1 - Get All Applications', async () => {
 
 test('Application Test 2 - Get Application by Id', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'name' : 'App1',
@@ -69,7 +69,7 @@ test('Application Test 2 - Get Application by Id', async () => {
 
 test('Application Test 3 - Get Application by Id (no results)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { applicationModel.getApplicationById = jest.fn().mockReturnValue({ 'rows' : []}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { applicationModel.getApplicationById = jest.fn().mockReturnValue([]); };
@@ -82,7 +82,7 @@ test('Application Test 3 - Get Application by Id (no results)', async () => {
 
 test('Application Test 4 - Fail Application Validation', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{
@@ -113,7 +113,7 @@ test('Application Test 4 - Fail Application Validation', async () => {
 
 test('Application Test 5 - Create Application', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { applicationModel.getFilteredApplications = jest.fn().mockReturnValue({'rows' : []}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { applicationModel.getFilteredApplications = jest.fn().mockReturnValue([]); };
@@ -158,7 +158,7 @@ test('Application Test 5 - Create Application', async () => {
 
 test('Application Test 6 - Update Application', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { applicationModel.getApplicationById = jest.fn().mockReturnValue({'rows' : [10]}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { applicationModel.getApplicationById = jest.fn().mockReturnValue([10]); };
@@ -198,7 +198,7 @@ test('Application Test 6 - Update Application', async () => {
 
 test('Application Test 7 - Update / Delete Application (application Id not found)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     if (DB_Conn === Constants.DB_CONNS_PG) { applicationModel.getApplicationById = jest.fn().mockReturnValue({'rows' : []}); };
     if (DB_Conn === Constants.DB_CONNS_MONGO) { applicationModel.getApplicationById = jest.fn().mockReturnValue([]); };
@@ -216,7 +216,7 @@ test('Application Test 7 - Update / Delete Application (application Id not found
 
 test('Application Test 8 - Delete Application', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{

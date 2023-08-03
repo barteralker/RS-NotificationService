@@ -1,9 +1,9 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 
 function parseForTags(template, removeBraces) {
 
-    winston.info(`Parsing Notification for Tags`);
+    logger.info(`Parsing Notification for Tags`);
 
     const regex = /{([^}]+)}/g;
     let tags = template.match(regex);
@@ -15,7 +15,7 @@ function parseForTags(template, removeBraces) {
 
 function parseAndFillTags(template, tags) {
 
-    winston.info(`Filling out Notification template with Tags`);
+    logger.info(`Filling out Notification template with Tags`);
 
     tagPlaceholders = parseForTags(template, false);
 

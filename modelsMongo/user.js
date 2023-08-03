@@ -1,10 +1,11 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const User = require('../mongooseCollections/user').User;
 
-async function createUser(user) {
+async function createUser(user, tid) {
 
-    winston.info(`In Users Model - Creating New User`);
+    logger.setTraceId(tid);
+    logger.info(`In Users Model - Creating New User`);
 
     const mongoUser = new User({
         name : user.name,
@@ -17,9 +18,10 @@ async function createUser(user) {
 
 }
 
-async function getUser(user) {
+async function getUser(user, tid) {
 
-    winston.info(`In Users Model - Checking if User exists.`);
+    logger.setTraceId(tid);
+    logger.info(`In Users Model - Checking if User exists.`);
 
     const result = User.find({
         email : user.email,

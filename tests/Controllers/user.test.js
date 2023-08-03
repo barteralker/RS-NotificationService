@@ -1,5 +1,5 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const userController = require('../../controllers/user');
 const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
@@ -9,7 +9,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var userModel = require('../../model
 
 test('User Test 1 - Create User', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{
@@ -58,7 +58,7 @@ test('User Test 1 - Create User', async () => {
 
 test('User Test 2 - Fail User Validation', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     let result1 = await userController.createUser({
         'name' : 'User1',
@@ -96,7 +96,7 @@ test('User Test 2 - Fail User Validation', async () => {
 
 test('User Test 3 - Create User (User already exists)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const retPg = {
         'rows' : [{
@@ -127,7 +127,7 @@ test('User Test 3 - Create User (User already exists)', async () => {
 
 test('User Test 4 - Get User', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     const ret = [{
         'id' : 1, 

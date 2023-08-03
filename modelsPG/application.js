@@ -1,11 +1,12 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const pg = require('../dbConnections/pgConnection');
 const queries = require('../postgresQueries/application');
 
-async function getAllApplications() {
+async function getAllApplications(tid) {
 
-    winston.info(`In Applications Model - Getting All Applications`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Getting All Applications`);
 
     pool = new pg.Pool(pg.credentials);
     const result = await pool.query(queries.GET_ALL_APPLICATIONS);
@@ -15,9 +16,10 @@ async function getAllApplications() {
 
 }
 
-async function getFilteredApplications(appendee) {
+async function getFilteredApplications(appendee, tid) {
 
-    winston.info(`In Applications Model - Getting Filtered Applications`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Getting Filtered Applications`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -30,9 +32,10 @@ async function getFilteredApplications(appendee) {
 
 }
 
-async function getApplicationById(id) {
+async function getApplicationById(id, tid) {
 
-    winston.info(`In Applications Model - Getting Application with ID ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Getting Application with ID ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -47,9 +50,10 @@ async function getApplicationById(id) {
 
 }
 
-async function createApplication(application) {
+async function createApplication(application, tid) {
 
-    winston.info(`In Applications Model - Creating New Application`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Creating New Application`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -64,9 +68,10 @@ async function createApplication(application) {
 
 }
 
-async function updateApplication(id, application) {
+async function updateApplication(id, application, tid) {
 
-    winston.info(`In Applications Model - Updating Application with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Updating Application with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -81,9 +86,10 @@ async function updateApplication(id, application) {
 
 }
 
-async function deleteApplication(id) {
+async function deleteApplication(id, tid) {
 
-    winston.info(`In Applications Model - Deleting Application with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Applications Model - Deleting Application with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 

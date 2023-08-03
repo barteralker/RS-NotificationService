@@ -1,16 +1,18 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const pg = require('../dbConnections/pgConnection');
 const queries = require('../postgresQueries/event');
 
-async function getAllEvents() {
+async function getAllEvents(tid) {
 
-    winston.info(`In Events Model - Getting All Events`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Getting All Events`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.GET_ALL_EVENTS;
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
 
     const result = await pool.query(querySQl);
 
@@ -20,9 +22,10 @@ async function getAllEvents() {
 
 }
 
-async function getFilteredEvents(appendee) {
+async function getFilteredEvents(appendee, tid) {
 
-    winston.info(`In Events Model - Getting Filtered Events`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Getting Filtered Events`);
 
     pool = new pg.Pool(pg.credentials);
 
@@ -35,16 +38,18 @@ async function getFilteredEvents(appendee) {
 
 }
 
-async function getEventById(id) {
+async function getEventById(id, tid) {
 
-    winston.info(`In Events Model - Getting Event with ID ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Getting Event with ID ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.GET_EVENT_BY_ID;
     const values = [id];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();
@@ -53,16 +58,18 @@ async function getEventById(id) {
 
 }
 
-async function createEvent(event) {
+async function createEvent(event, tid) {
 
-    winston.info(`In Events Model - Creating New Event`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Creating New Event`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.CREATE_EVENT;
     const values = [event.application_id, event.name, event.description];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();
@@ -71,16 +78,18 @@ async function createEvent(event) {
 
 }
 
-async function updateEvent(id, event) {
+async function updateEvent(id, event, tid) {
 
-    winston.info(`In Events Model - Updating Event with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Updating Event with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.UPDATE_EVENT;
     const values = [event.application_id, event.name, event.description, id];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();   
@@ -89,16 +98,18 @@ async function updateEvent(id, event) {
 
 }
 
-async function deleteEvent(id) {
+async function deleteEvent(id, tid) {
 
-    winston.info(`In Events Model - Deleting Event with ID : ${id}`);
+    logger.setTraceId(tid);
+    logger.info(`In Events Model - Deleting Event with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.DELETE_EVENT;
     const values = [id];
 
-    winston.info(`Running Postgres query : ${querySQl}`);
+    logger.setTraceId(tid);
+    logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
     await pool.end();   

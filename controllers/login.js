@@ -1,5 +1,5 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const DB_Conn = require('../config/dev.json').DB_CONN;
 const Constants = require('../resources/constants');
 const Joi = require('joi');
@@ -11,9 +11,10 @@ const userController = require('../controllers/user');
 if (DB_Conn === Constants.DB_CONNS_PG) { var loginModel = require('../modelsPG/login'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var loginModel = require('../modelsMongo/login'); };
 
-function validateLoginInfo(body) {
+function validateLoginInfo(body, tid) {
 
-    winston.info('Validating Login Input');
+    logger.setTraceId(tid);
+    logger.info('Validating Login Input');
 
     const schema = Joi.object({
         
@@ -27,14 +28,15 @@ function validateLoginInfo(body) {
 
 };
 
-async function login(user) {
+async function login(user, tid) {
 
-    winston.info(`In Logins Controller - Creating New Login`);
+    logger.setTraceId(tid);
+    logger.info(`In Logins Controller - Creating New Login`);
 
-    const validationResult = validateLoginInfo(user);
+    const validationResult = validateLoginInfo(user, tid);
     if (validationResult.error) return `Invalid username or password`;
 
-    let userObj = await userController.getUser(user);
+    let userObj = await userController.getUser(user, tid);
 
     if (userObj.length < 1) return 'Invalid username or password';
     userObj = userObj[0];
@@ -47,7 +49,7 @@ async function login(user) {
 
     if (!validatePassword) return `Invalid username or password`;
 
-    loginModel.createLogin(userObj.id)
+    loginModel.createLogin(userObj.id, tid)
 
     const userJwt = jwt.sign({
         user_id: userObj.id

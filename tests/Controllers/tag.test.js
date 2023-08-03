@@ -1,5 +1,5 @@
 
-const winston = require('winston');
+const logger = require('../startup/loggingSetup');
 const DB_Conn = require('../../config/dev.json').DB_CONN;
 const Constants = require('../../resources/constants');
 const tagController = require('../../controllers/tag');
@@ -9,7 +9,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var TagModel = require('../../models
 
 test('Tag Test 1 - Create Tags', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     TagModel.createTag = jest.fn();
 
@@ -19,7 +19,7 @@ test('Tag Test 1 - Create Tags', async () => {
 
 test('Tag Test 2 - Create Tags (Empty Tag Array)', async () => {
 
-    winston.info = jest.fn();
+    logger.info = jest.fn();
 
     TagModel.createTag = jest.fn();
 
