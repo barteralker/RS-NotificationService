@@ -1,6 +1,6 @@
 
-const logger = require('../../startup/loggingSetup');
-const parser = require('../../utils/NotificationParser');
+const logger = require('../../../startup/loggingSetup');
+const parser = require('../../../utils/NotificationParser');
 
 test("Parser Test 1 - parseForTags1 - Normal String", () => {
 

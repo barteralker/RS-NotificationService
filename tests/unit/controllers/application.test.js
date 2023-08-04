@@ -1,16 +1,16 @@
 
-let server = require('../../index');
+let server = require('../../../index');
 
-const logger = require('../../startup/loggingSetup');
-const applicationController = require('../../controllers/application');
+const logger = require('../../../startup/loggingSetup');
+const applicationController = require('../../../controllers/application');
 const config = require('config');
-require(`../../config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN');
-const DB_Conn = require(`../../config/${config.get('instance')}.json`).DB_CONN;
-const Constants = require('../../resources/constants');
+require(`../../../config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN');
+const DB_Conn = require(`../../../config/${config.get('instance')}.json`).DB_CONN;
+const Constants = require('../../../resources/constants');
 const express = require('express');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../../modelsPG/application'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../../modelsMongo/application'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../../../modelsPG/application'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../../../modelsMongo/application'); };
 
 test('Application Test 1 - Get All Applications', async () => {
 

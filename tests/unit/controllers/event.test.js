@@ -1,16 +1,16 @@
 
-let server = require('../../index');
+let server = require('../../../index');
 
-const logger = require('../../startup/loggingSetup');
-const eventController = require('../../controllers/event');
+const logger = require('../../../startup/loggingSetup');
+const eventController = require('../../../controllers/event');
 const config = require('config');
-require(`../../config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN');
-const DB_Conn = require(`../../config/${config.get('instance')}.json`).DB_CONN;
-const Constants = require('../../resources/constants');
+require(`../../../config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN');
+const DB_Conn = require(`../../../config/${config.get('instance')}.json`).DB_CONN;
+const Constants = require('../../../resources/constants');
 const express = require('express');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var eventModel = require('../../modelsPG/event'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../../modelsMongo/event'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var eventModel = require('../../../modelsPG/event'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../../../modelsMongo/event'); };
 
 test('Event Test 1 - Get All Events', async () => {
 

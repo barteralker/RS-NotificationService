@@ -1,18 +1,18 @@
 
-let server = require('../../index');
+let server = require('../../../index');
 
-const logger = require('../../startup/loggingSetup');
-const notificationController = require('../../controllers/notification');
+const logger = require('../../../startup/loggingSetup');
+const notificationController = require('../../../controllers/notification');
 const config = require('config');
-require(`../../config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN');
-const DB_Conn = require(`../../config/${config.get('instance')}.json`).DB_CONN;
-const Constants = require('../../resources/constants');
-const tagController = require('../../controllers/tag');
-const messageController = require('../../controllers/message');
+require(`../../../config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN');
+const DB_Conn = require(`../../../config/${config.get('instance')}.json`).DB_CONN;
+const Constants = require('../../../resources/constants');
+const tagController = require('../../../controllers/tag');
+const messageController = require('../../../controllers/message');
 const express = require('express');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var notificationModel = require('../../modelsPG/notification'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var notificationModel = require('../../modelsMongo/notification'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var notificationModel = require('../../../modelsPG/notification'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var notificationModel = require('../../../modelsMongo/notification'); };
 
 test('Notification Test 1 - Get All Notifications', async () => {
 
