@@ -11,16 +11,35 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var MessageModel = require('../model
 
 function validateMessage(body) {
 
-    logger.info('Validating Message Input');
-    const schema = Joi.object({
-        
-        notification_type: Joi.number().integer().min(1).required(),
-        message_text: Joi.string().required(),
-        timestamp: Joi.date()
+    if (validator === Constants.VALIDATOR_CREATE_UPDATE) {
 
-    });
+        logger.info('Validating Message Input');
+        const schema = Joi.object({
+            
+            notification_type: Joi.number().integer().min(1).required(),
+            message_text: Joi.string().required(),
+            timestamp: Joi.date()
+    
+        });
+    
+        return schema.validate(body);
+            
+    }
 
-    return schema.validate(body);
+    if (validator === Constants.VALIDATOR_FILTER) {
+
+        logger.info('Validating Message Filters');
+        const schema = Joi.object({
+            
+            notification_type: Joi.number().integer().min(1),
+            message_text: Joi.string(),
+            timestamp: Joi.date()
+    
+        });
+    
+        return schema.validate(body);
+            
+    }
 
 };
 
@@ -30,6 +49,9 @@ async function getAllMessages(req) {
 
     if (req.header('filter') && req.header('filter') === 'true') {
 
+        const validationResult = validateMessage(req.body, Constants.VALIDATOR_FILTER);
+        if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
+    
         if (DB_Conn === Constants.DB_CONNS_PG) var result = await MessageModel.getFilteredMessages(utils.postgresFilterCreator(req.body));
         if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await MessageModel.getFilteredMessages(req.body);
 
@@ -44,6 +66,7 @@ async function getAllMessages(req) {
 
 async function getMessageById(id) {
 
+    
     logger.info(`In Messages Controller - Getting Message with ID ${id}`);
 
     const result = await MessageModel.getMessageById(id);
@@ -57,7 +80,7 @@ async function createMessage(message) {
 
     logger.info(`In Messages Controller - Creating New Message`);
 
-    const validationResult = validateMessage(message);
+    const validationResult = validateMessage(message, Constants.VALIDATOR_CREATE_UPDATE);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     if (!message.timestamp) message.timestamp = new Date().toUTCString(); 
@@ -75,7 +98,7 @@ async function updateMessage(id, message) {
 
     if ((await getMessageById(id)).length === 0) return `Message with id ${id} not found`;
     
-    const validationResult = validateMessage(message);
+    const validationResult = validateMessage(message, Constants.VALIDATOR_CREATE_UPDATE);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     const result = await MessageModel.updateMessage(id, message);

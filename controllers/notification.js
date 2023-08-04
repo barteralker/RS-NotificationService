@@ -14,7 +14,7 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var NotificationModel = require('../
 
 function validateNotification(body, validator) {
 
-    if (validator === 'newTemplate') {
+    if (validator === Constants.VALIDATOR_CREATE_UPDATE) {
         logger.info('Validating Notification Input');
         const schema = Joi.object({
             
@@ -22,6 +22,20 @@ function validateNotification(body, validator) {
             name: Joi.string().required().min(5).max(25),
             template_subject: Joi.string().required().min(5).max(25),
             template_body: Joi.string().required().min(20)
+
+        });
+
+        return schema.validate(body);
+    }
+
+    if (validator === Constants.VALIDATOR_FILTER) {
+        logger.info('Validating Notification Filters');
+        const schema = Joi.object({
+            
+            event_id: Joi.number().integer().min(1),
+            name: Joi.string().max(25),
+            template_subject: Joi.string().max(25),
+            template_body: Joi.string()
 
         });
 
@@ -49,6 +63,9 @@ async function getAllNotifications(req) {
 
     if (req.header('filter') && req.header('filter') === 'true') {
 
+        const validationResult = validateNotification(req.body, Constants.VALIDATOR_FILTER);
+        if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
+    
         if (DB_Conn === Constants.DB_CONNS_PG) var result = await NotificationModel.getFilteredNotifications(utils.postgresFilterCreator(req.body));
         if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await NotificationModel.getFilteredNotifications(req.body);
 
@@ -76,7 +93,7 @@ async function createNotification(notification) {
 
     logger.info(`In Notifications Controller - Creating New Notification`);
 
-    const validationResult = validateNotification(notification, 'newTemplate');
+    const validationResult = validateNotification(notification, Constants.VALIDATOR_CREATE_UPDATE);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     await tagController.createTags(notificationParser.parseForTags(notification.template_body, true));
@@ -94,7 +111,7 @@ async function updateNotification(id, notification) {
 
     if ((await getNotificationById(id)).length === 0) return `Notification with id ${id} not found`;
     
-    const validationResult = validateNotification(notification, 'newTemplate');
+    const validationResult = validateNotification(notification, Constants.VALIDATOR_CREATE_UPDATE);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     await tagController.createTags(notificationParser.parseForTags(notification.template_body, true));

@@ -11,16 +11,35 @@ if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../modelsM
 
 function validateEvent(body) {
 
-    logger.info('Validating Event Input');
-    const schema = Joi.object({
+    if (validator === Constants.VALIDATOR_CREATE_UPDATE) {
+
+        logger.info('Validating Event Input');
+        const schema = Joi.object({
+            
+            application_id: Joi.number().integer().min(1).required(),
+            name: Joi.string().required().min(5).max(25),
+            description: Joi.string().max(50)
+
+        });
+
+        return schema.validate(body);
         
-        application_id: Joi.number().integer().min(1).required(),
-        name: Joi.string().required().min(5).max(25),
-        description: Joi.string().max(50)
+    }
 
-    });
+    if (validator === Constants.VALIDATOR_FILTER) {
 
-    return schema.validate(body);
+        logger.info('Validating Event Filters');
+        const schema = Joi.object({
+            
+            application_id: Joi.number().integer().min(1),
+            name: Joi.string().max(25),
+            description: Joi.string().max(50)
+
+        });
+
+        return schema.validate(body);
+        
+    }
 
 };
 
@@ -30,6 +49,9 @@ async function getAllEvents(req) {
 
     if (req.header('filter') && req.header('filter') === 'true') {
 
+        const validationResult = validateEvent(req.body, Constants.VALIDATOR_FILTER);
+        if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
+    
         if (DB_Conn === Constants.DB_CONNS_PG) var result = await eventModel.getFilteredEvents(utils.postgresFilterCreator(req.body));
         if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await eventModel.getFilteredEvents(req.body);
 
@@ -57,7 +79,7 @@ async function createEvent(event) {
 
     logger.info(`In Events Controller - Creating New Event`);
 
-    const validationResult = validateEvent(event);
+    const validationResult = validateEvent(event, Constants.VALIDATOR_CREATE_UPDATE);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     const result = await eventModel.createEvent(event);
@@ -73,7 +95,7 @@ async function updateEvent(id, event) {
 
     if ((await getEventById(id)).length === 0) return `Event with id ${id} not found`;
     
-    const validationResult = validateEvent(event);
+    const validationResult = validateEvent(event, Constants.VALIDATOR_CREATE_UPDATE);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     const result = await eventModel.updateEvent(id, event);

@@ -9,18 +9,37 @@ const utils = require('../utils/FilterUtils');
 if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../modelsPG/application'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../modelsMongo/application'); };
 
-function validateApplication(body) {
+function validateApplication(body, validator) {
 
-    logger.info(`Validating Application Input`);
-    
-    const schema = Joi.object({
+    if (validator === Constants.VALIDATOR_CREATE_UPDATE) {
+
+        logger.info(`Validating Application Input`);
         
-        name: Joi.string().required().min(3).max(15),
-        description: Joi.string().max(50)
+        const schema = Joi.object({
+            
+            name: Joi.string().required().min(3).max(15),
+            description: Joi.string().max(50)
 
-    });
+        });
 
-    return schema.validate(body);
+        return schema.validate(body);
+
+    }
+
+    else if (validator === Constants.VALIDATOR_FILTER) {
+
+        logger.info(`Validating Application Filters`);
+        
+        const schema = Joi.object({
+            
+            name: Joi.string().max(15),
+            description: Joi.string().max(50)
+
+        });
+
+        return schema.validate(body);
+
+    }
 
 };
 
@@ -29,6 +48,9 @@ async function getAllApplications(req) {
     logger.info(`In Applications Controller - Getting All Applications`);
 
     if (req.header('filter') && req.header('filter') === 'true') {
+
+        const validationResult = validateApplication(req.body, Constants.VALIDATOR_FILTER);
+        if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;    
 
         if (DB_Conn === Constants.DB_CONNS_PG) var result = await applicationModel.getFilteredApplications(utils.postgresFilterCreator(req.body));
         if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await applicationModel.getFilteredApplications(req.body);
@@ -57,7 +79,7 @@ async function createApplication(application) {
 
     logger.info(`In Applications Controller - Creating New Application`);
 
-    const validationResult = validateApplication(application);
+    const validationResult = validateApplication(application, Constants.VALIDATOR_CREATE_UPDATE);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     let exists = await applicationModel.getFilteredApplications(utils.postgresFilterCreator({"name" : application.name}));
@@ -83,7 +105,7 @@ async function updateApplication(id, application) {
 
     if ((await getApplicationById(id)).length === 0) return `Appliction with id ${id} not found`;
     
-    const validationResult = validateApplication(application);
+    const validationResult = validateApplication(application, Constants.VALIDATOR_CREATE_UPDATE);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
     const result =  await applicationModel.updateApplication(id, application);
