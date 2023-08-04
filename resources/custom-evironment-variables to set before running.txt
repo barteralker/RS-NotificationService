@@ -1,8 +1,10 @@
 
 export dbConnection=postgres
+export dbConnection=mongo
     this can be either postgres or mongo
 
 export instance=test
+export instance=dev
     this can be either test or dev (or the name of another config file that exists in config folder like prod)
 
 export PGDBPassword=
