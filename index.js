@@ -12,4 +12,6 @@ require('./startup/jwtSetup')();
 require('./startup/unhandledError')();
 
 const port = process.env.port || require(`./config/${config.get('instance')}.json`).port;
-app.listen(port, () => logger.info(`Listening on Port ${port} !`));
+const appServer = app.listen(port, () => logger.info(`Listening on Port ${port} !`));
+
+module.exports = appServer;
