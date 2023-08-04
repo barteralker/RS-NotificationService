@@ -1,7 +1,10 @@
 
+let server = require('../../index');
+
 const logger = require('../../startup/loggingSetup');
 const eventController = require('../../controllers/event');
 const config = require('config');
+require(`../../config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN');
 const DB_Conn = require(`../../config/${config.get('instance')}.json`).DB_CONN;
 const Constants = require('../../resources/constants');
 const express = require('express');
@@ -253,3 +256,5 @@ test('Event Test 8 - Delete Event', async () => {
     );
 
 });
+
+server.close();

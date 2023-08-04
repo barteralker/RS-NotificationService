@@ -1,7 +1,10 @@
 
+let server = require('../../index');
+
 const logger = require('../../startup/loggingSetup');
 const applicationController = require('../../controllers/application');
 const config = require('config');
+require(`../../config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN');
 const DB_Conn = require(`../../config/${config.get('instance')}.json`).DB_CONN;
 const Constants = require('../../resources/constants');
 const express = require('express');
@@ -250,3 +253,5 @@ test('Application Test 8 - Delete Application', async () => {
 
 
 });
+
+server.close();

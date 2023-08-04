@@ -1,11 +1,13 @@
 
+let server = require('../../index');
+
 const logger = require('../../startup/loggingSetup');
 const loginController = require('../../controllers/login');
 const config = require('config');
+require(`../../config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN');
 const DB_Conn = require(`../../config/${config.get('instance')}.json`).DB_CONN;
 const Constants = require('../../resources/constants');
 const bcrypt = require('bcrypt');
-const config = require('config');
 const userController = require('../../controllers/user');
 
 if (DB_Conn === Constants.DB_CONNS_PG) { var loginModel = require('../../modelsPG/login'); };
@@ -104,3 +106,5 @@ test('Login Test 4 - Login (Password Mismatch)', async () => {
     expect(result).toMatch('Invalid');
 
 });
+
+server.close();
