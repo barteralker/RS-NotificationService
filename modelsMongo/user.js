@@ -2,9 +2,8 @@
 const logger = require('../startup/loggingSetup');
 const User = require('../mongooseCollections/user').User;
 
-async function createUser(user, tid) {
+async function createUser(user) {
 
-    logger.setTraceId(tid);
     logger.info(`In Users Model - Creating New User`);
 
     const mongoUser = new User({
@@ -18,9 +17,8 @@ async function createUser(user, tid) {
 
 }
 
-async function getUser(user, tid) {
+async function getUser(user) {
 
-    logger.setTraceId(tid);
     logger.info(`In Users Model - Checking if User exists.`);
 
     const result = User.find({

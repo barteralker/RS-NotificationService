@@ -9,9 +9,8 @@ const utils = require('../utils/FilterUtils');
 if (DB_Conn === Constants.DB_CONNS_PG) { var eventModel = require('../modelsPG/event'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../modelsMongo/event'); };
 
-function validateEvent(body, tid) {
+function validateEvent(body) {
 
-    logger.setTraceId(tid);
     logger.info('Validating Event Input');
     const schema = Joi.object({
         
@@ -25,79 +24,74 @@ function validateEvent(body, tid) {
 
 };
 
-async function getAllEvents(req, tid) {
+async function getAllEvents(req) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Controller - Getting All Events`);
 
     if (req.header('filter') && req.header('filter') === 'true') {
 
-        if (DB_Conn === Constants.DB_CONNS_PG) var result = await eventModel.getFilteredEvents(utils.postgresFilterCreator(req.body), tid);
-        if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await eventModel.getFilteredEvents(req.body, tid);
+        if (DB_Conn === Constants.DB_CONNS_PG) var result = await eventModel.getFilteredEvents(utils.postgresFilterCreator(req.body));
+        if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await eventModel.getFilteredEvents(req.body);
 
     }
 
-    else var result = await eventModel.getAllEvents(tid);
+    else var result = await eventModel.getAllEvents();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return utils.paginateResults(result.rows, req);
     if (DB_Conn === Constants.DB_CONNS_MONGO) return utils.paginateResults(result, req);
 
 }
 
-async function getEventById(id, tid) {
+async function getEventById(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Controller - Getting Event with ID ${id}`);
 
-    const result = await eventModel.getEventById(id, tid);
+    const result = await eventModel.getEventById(id);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
-async function createEvent(event, tid) {
+async function createEvent(event) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Controller - Creating New Event`);
 
-    const validationResult = validateEvent(event, tid);
+    const validationResult = validateEvent(event);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    const result = await eventModel.createEvent(event, tid);
+    const result = await eventModel.createEvent(event);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
     
 }
 
-async function updateEvent(id, event, tid) {
+async function updateEvent(id, event) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Controller - Updating Event with ID ${id}`);
 
-    if ((await getEventById(id, tid)).length === 0) return `Event with id ${id} not found`;
+    if ((await getEventById(id)).length === 0) return `Event with id ${id} not found`;
     
-    const validationResult = validateEvent(event, tid);
+    const validationResult = validateEvent(event);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    const result = await eventModel.updateEvent(id, event, tid);
+    const result = await eventModel.updateEvent(id, event);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
 
 }
 
-async function deleteEvent(id, tid) {
+async function deleteEvent(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Controller - Deleting Event with ID ${id}`);
 
-    const deletedEvent = await getEventById(id, tid);
+    const deletedEvent = await getEventById(id);
 
     if (deletedEvent.length === 0) return `Event with id ${id} not found`;
 
-    result = await eventModel.deleteEvent(id, tid);
+    result = await eventModel.deleteEvent(id);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return deletedEvent;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return [deletedEvent];

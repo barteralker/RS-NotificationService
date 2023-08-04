@@ -9,9 +9,8 @@ const utils = require('../utils/FilterUtils');
 if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../modelsPG/application'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../modelsMongo/application'); };
 
-function validateApplication(body, tid) {
+function validateApplication(body) {
 
-    logger.setTraceId(tid);
     logger.info(`Validating Application Input`);
     
     const schema = Joi.object({
@@ -25,52 +24,49 @@ function validateApplication(body, tid) {
 
 };
 
-async function getAllApplications(req, tid) {
+async function getAllApplications(req) {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Controller - Getting All Applications`);
 
     if (req.header('filter') && req.header('filter') === 'true') {
 
-        if (DB_Conn === Constants.DB_CONNS_PG) var result = await applicationModel.getFilteredApplications(utils.postgresFilterCreator(req.body), tid);
-        if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await applicationModel.getFilteredApplications(req.body, tid);
+        if (DB_Conn === Constants.DB_CONNS_PG) var result = await applicationModel.getFilteredApplications(utils.postgresFilterCreator(req.body));
+        if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await applicationModel.getFilteredApplications(req.body);
 
     }
 
-    else var result = await applicationModel.getAllApplications(tid);
+    else var result = await applicationModel.getAllApplications();
 
     if (DB_Conn === Constants.DB_CONNS_PG) return utils.paginateResults(result.rows, req);
     if (DB_Conn === Constants.DB_CONNS_MONGO) return utils.paginateResults(result, req);
 
 }
 
-async function getApplicationById(id, tid) {
+async function getApplicationById(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Controller - Getting Application with ID ${id}`);
 
-    const result = await applicationModel.getApplicationById(id, tid);
+    const result = await applicationModel.getApplicationById(id);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
-async function createApplication(application, tid) {
+async function createApplication(application) {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Controller - Creating New Application`);
 
-    const validationResult = validateApplication(application, tid);
+    const validationResult = validateApplication(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    let exists = await applicationModel.getFilteredApplications(utils.postgresFilterCreator({"name" : application.name}), tid);
+    let exists = await applicationModel.getFilteredApplications(utils.postgresFilterCreator({"name" : application.name}));
     if (DB_Conn === Constants.DB_CONNS_PG) exists = exists.rows;
     exists = exists.length > 0;
 
     if (!exists) {
     
-        var result = await applicationModel.createApplication(application, tid);
+        var result = await applicationModel.createApplication(application);
 
         if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
         if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
@@ -81,33 +77,31 @@ async function createApplication(application, tid) {
     
 }
 
-async function updateApplication(id, application, tid) {
+async function updateApplication(id, application) {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Controller - Updating Application with ID ${id}`);
 
-    if ((await getApplicationById(id, tid)).length === 0) return `Appliction with id ${id} not found`;
+    if ((await getApplicationById(id)).length === 0) return `Appliction with id ${id} not found`;
     
-    const validationResult = validateApplication(application, tid);
+    const validationResult = validateApplication(application);
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    const result =  await applicationModel.updateApplication(id, application, tid);
+    const result =  await applicationModel.updateApplication(id, application);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
 
 }
 
-async function deleteApplication(id, tid) {
+async function deleteApplication(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Controller - Deleting Application with ID ${id}`);
 
-    const deletedApplication = await getApplicationById(id, tid);
+    const deletedApplication = await getApplicationById(id);
 
     if (deletedApplication.length === 0) return `Appliction with id ${id} not found`;
 
-    result = await applicationModel.deleteApplication(id, tid);
+    result = await applicationModel.deleteApplication(id);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return deletedApplication;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return [deletedApplication];

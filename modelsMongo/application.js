@@ -2,36 +2,32 @@
 const logger = require('../startup/loggingSetup');
 const Application = require('../mongooseCollections/application').Application;
 
-async function getAllApplications(tid) {
+async function getAllApplications() {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Model - Getting All Applications`);
 
     return (await Application.find());
 
 }
 
-async function getFilteredApplications(filters, tid) {
+async function getFilteredApplications(filters) {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Model - Getting Filtered Applications`);
 
     return (await Application.find(filters));
 
 }
 
-async function getApplicationById(id, tid) {
+async function getApplicationById(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Model - Getting Application with ID ${id}`);
 
     return (await Application.findById(id));
 
 }
 
-async function createApplication(application, tid) {
+async function createApplication(application) {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Model - Creating New Application`);
 
     const mongoApplication = new Application({
@@ -43,9 +39,8 @@ async function createApplication(application, tid) {
 
 }
 
-async function updateApplication(id, application, tid) {
+async function updateApplication(id, application) {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Model - Updating Application with ID : ${id}`);
 
     return (await Application.findByIdAndUpdate(id, {
@@ -55,9 +50,8 @@ async function updateApplication(id, application, tid) {
 
 }
 
-async function deleteApplication(id, tid) {
+async function deleteApplication(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Applications Model - Deleting Application with ID : ${id}`);
 
     return (await Application.findByIdAndDelete(id));

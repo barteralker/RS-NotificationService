@@ -2,9 +2,8 @@
 const logger = require('../startup/loggingSetup');
 const Login = require('../mongooseCollections/login').Login;
 
-async function createLogin(user_id, tid) {
+async function createLogin(user_id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Logins Model - Creating New Login`);
 
     const mongoLogin = new Login({

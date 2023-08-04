@@ -2,36 +2,32 @@
 const logger = require('../startup/loggingSetup');
 const Event = require('../mongooseCollections/event').Event;
 
-async function getAllEvents(tid) {
+async function getAllEvents() {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Getting All Events`);
 
     return (await Event.find());
 
 }
 
-async function getFilteredEvents(filters, tid) {
+async function getFilteredEvents(filters) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Getting Filtered Events`);
 
     return (await Event.find(filters));
 
 }
 
-async function getEventById(id, tid) {
+async function getEventById(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Getting Event with ID ${id}`);
 
     return (await Event.findById(id));
 
 }
 
-async function createEvent(event, tid) {
+async function createEvent(event) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Creating New Event`);
 
     const mongoEvent = new Event({
@@ -44,9 +40,8 @@ async function createEvent(event, tid) {
 
 }
 
-async function updateEvent(id, event, tid) {
+async function updateEvent(id, event) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Updating Event with ID : ${id}`);
 
     return (await Event.findByIdAndUpdate(id, {
@@ -57,9 +52,8 @@ async function updateEvent(id, event, tid) {
 
 }
 
-async function deleteEvent(id, tid) {
+async function deleteEvent(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Deleting Event with ID : ${id}`);
 
     return (await Event.findByIdAndDelete(id));

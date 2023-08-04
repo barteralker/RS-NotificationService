@@ -12,11 +12,10 @@ const utils = require('../utils/FilterUtils');
 if (DB_Conn === Constants.DB_CONNS_PG) { var NotificationModel = require('../modelsPG/notification'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var NotificationModel = require('../modelsMongo/notification'); };
 
-function validateNotification(body, validator, tid) {
+function validateNotification(body, validator) {
 
     if (validator === 'newTemplate') {
-        logger.setTraceId(tid);
-    logger.info('Validating Notification Input');
+        logger.info('Validating Notification Input');
         const schema = Joi.object({
             
             event_id: Joi.number().integer().min(1).required(),
@@ -30,8 +29,7 @@ function validateNotification(body, validator, tid) {
     }
 
     if (validator === 'newNotification') {
-        logger.setTraceId(tid);
-    logger.info('Validating New Notification Input');
+        logger.info('Validating New Notification Input');
         const schema = Joi.object({
             
             notification_type: Joi.number().integer().min(1).required(),
@@ -45,98 +43,92 @@ function validateNotification(body, validator, tid) {
 
 };
 
-async function getAllNotifications(req, tid) {
+async function getAllNotifications(req) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Controller - Getting All Notifications`);
 
     if (req.header('filter') && req.header('filter') === 'true') {
 
-        if (DB_Conn === Constants.DB_CONNS_PG) var result = await NotificationModel.getFilteredNotifications(utils.postgresFilterCreator(req.body), tid);
-        if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await NotificationModel.getFilteredNotifications(req.body, tid);
+        if (DB_Conn === Constants.DB_CONNS_PG) var result = await NotificationModel.getFilteredNotifications(utils.postgresFilterCreator(req.body));
+        if (DB_Conn === Constants.DB_CONNS_MONGO) var result = await NotificationModel.getFilteredNotifications(req.body);
 
     }
 
     else var result = await NotificationModel.getAllNotifications();
 
-    if (DB_Conn === Constants.DB_CONNS_PG) return utils.paginateResults(result.rows, req, tid);
-    if (DB_Conn === Constants.DB_CONNS_MONGO) return utils.paginateResults(result, req, tid);
+    if (DB_Conn === Constants.DB_CONNS_PG) return utils.paginateResults(result.rows, req);
+    if (DB_Conn === Constants.DB_CONNS_MONGO) return utils.paginateResults(result, req);
 
 }
 
-async function getNotificationById(id, tid) {
+async function getNotificationById(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Controller - Getting Notification with ID ${id}`);
 
-    const result = await NotificationModel.getNotificationById(id, tid);
+    const result = await NotificationModel.getNotificationById(id);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;
 
 }
 
-async function createNotification(notification, tid) {
+async function createNotification(notification) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Controller - Creating New Notification`);
 
-    const validationResult = validateNotification(notification, 'newTemplate', tid);
+    const validationResult = validateNotification(notification, 'newTemplate');
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    await tagController.createTags(notificationParser.parseForTags(notification.template_body, true), tid);
+    await tagController.createTags(notificationParser.parseForTags(notification.template_body, true));
 
-    const result = await NotificationModel.createNotification(notification, tid);
+    const result = await NotificationModel.createNotification(notification);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
     
 }
 
-async function updateNotification(id, notification, tid) {
+async function updateNotification(id, notification) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Controller - Updating Notification with ID ${id}`);
 
-    if ((await getNotificationById(id, tid)).length === 0) return `Notification with id ${id} not found`;
+    if ((await getNotificationById(id)).length === 0) return `Notification with id ${id} not found`;
     
-    const validationResult = validateNotification(notification, 'newTemplate', tid);
+    const validationResult = validateNotification(notification, 'newTemplate');
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    await tagController.createTags(notificationParser.parseForTags(notification.template_body, true), tid);
+    await tagController.createTags(notificationParser.parseForTags(notification.template_body, true));
 
-    const result = await NotificationModel.updateNotification(id, notification, tid);
+    const result = await NotificationModel.updateNotification(id, notification);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return [result];
 
 }
 
-async function deleteNotification(id, tid) {
+async function deleteNotification(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Controller - Deleting Notification with ID ${id}`);
 
-    const deletedNotification = await getNotificationById(id, tid);
+    const deletedNotification = await getNotificationById(id);
 
     if (deletedNotification.length === 0) return `Notification with id ${id} not found`;
 
-    const result = await NotificationModel.deleteNotification(id, tid);
+    const result = await NotificationModel.deleteNotification(id);
 
     if (DB_Conn === Constants.DB_CONNS_PG) return deletedNotification;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return [deletedNotification];
 
 }
 
-async function sendNewNotification(notificationDetails, tid) {
+async function sendNewNotification(notificationDetails) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Controller - Sending new Notification to ${notificationDetails.receiver_email}`);
 
-    const validationResult = validateNotification(notificationDetails, 'newNotification', tid);
+    const validationResult = validateNotification(notificationDetails, 'newNotification');
     if (validationResult.error) return `Error : ${validationResult.error.details[0].message}`;
 
-    const notification = await getNotificationById(notificationDetails.notification_type, tid);
+    const notification = await getNotificationById(notificationDetails.notification_type);
     if (notification.length === 0) return `Error : Invalid Notification Type`;
 
     const template = notification[0].template_body;
@@ -152,7 +144,7 @@ async function sendNewNotification(notificationDetails, tid) {
         return err.message;
     }
 
-    messageController.createMessage(messageObject, tid);
+    messageController.createMessage(messageObject);
 
     return notificationDetails;
 

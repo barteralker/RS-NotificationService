@@ -1,4 +1,6 @@
 
+const logger = require('../startup/loggingSetup');
+
 function generateString(length) {
 
     const characters ='0123456789';
@@ -13,7 +15,13 @@ function generateString(length) {
 }
 
 function getTraceId() {
-    return generateString(16);
+
+    const traceId = generateString(16);
+
+    logger.setTraceId(traceId);
+    logger.info('New Trace ID Genereated');
+
+    return traceId;
 }
 
 module.exports = {

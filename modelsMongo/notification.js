@@ -2,36 +2,32 @@
 const logger = require('../startup/loggingSetup');
 const Notification = require('../mongooseCollections/notification').Notification;
 
-async function getAllNotifications(tid) {
+async function getAllNotifications() {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Model - Getting All Notifications`);
 
     return (await Notification.find());
 
 }
 
-async function getFilteredNotifications(filters, tid) {
+async function getFilteredNotifications(filters) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Model - Getting Filtered Notifications`);
 
     return (await Notification.find(filters));
 
 }
 
-async function getNotificationById(id, tid) {
+async function getNotificationById(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Model - Getting Notification with ID ${id}`);
 
     return (await Notification.findById(id));
 
 }
 
-async function createNotification(notification, tid) {
+async function createNotification(notification) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Model - Creating New Notification`);
 
     const mongoNotification = new Notification({
@@ -46,9 +42,8 @@ async function createNotification(notification, tid) {
 
 }
 
-async function updateNotification(id, notification, tid) {
+async function updateNotification(id, notification) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Model - Updating Notification with ID : ${id}`);
 
     return (await Notification.findByIdAndUpdate(id, {
@@ -58,9 +53,8 @@ async function updateNotification(id, notification, tid) {
 
 }
 
-async function deleteNotification(id, tid) {
+async function deleteNotification(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Notifications Model - Deleting Notification with ID : ${id}`);
 
     return (await Notification.findByIdAndDelete(id));

@@ -3,9 +3,8 @@ const logger = require('../startup/loggingSetup');
 const pg = require('../dbConnections/pgConnection');
 const queries = require('../postgresQueries/login');
 
-async function createLogin(user_id, tid) {
+async function createLogin(user_id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Logins Model - Creating New Login`);
 
     pool = new pg.Pool(pg.credentials);

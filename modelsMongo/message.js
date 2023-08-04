@@ -2,36 +2,32 @@
 const logger = require('../startup/loggingSetup');
 const Message = require('../mongooseCollections/message').Message;
 
-async function getAllMessages(tid) {
+async function getAllMessages() {
 
-    logger.setTraceId(tid);
     logger.info(`In Messages Model - Getting All Messages`);
 
     return (await Message.find());
 
 }
 
-async function getFilteredMessages(filters, tid) {
+async function getFilteredMessages(filters) {
 
-    logger.setTraceId(tid);
     logger.info(`In Messages Model - Getting Filtered Messages`);
 
     return (await Message.find(filters));
 
 }
 
-async function getMessageById(id, tid) {
+async function getMessageById(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Messages Model - Getting Message with ID ${id}`);
 
     return (await Message.findById(id));
 
 }
 
-async function createMessage(message, tid) {
+async function createMessage(message) {
 
-    logger.setTraceId(tid);
     logger.info(`In Messages Model - Creating New Message`);
 
     const mongoMessage = new Message({
@@ -43,9 +39,8 @@ async function createMessage(message, tid) {
 
 }
 
-async function updateMessage(id, message, tid) {
+async function updateMessage(id, message) {
 
-    logger.setTraceId(tid);
     logger.info(`In Messages Model - Updating Message with ID : ${id}`);
 
     return (await Message.findByIdAndUpdate(id, {
@@ -55,9 +50,8 @@ async function updateMessage(id, message, tid) {
 
 }
 
-async function deleteMessage(id, tid) {
+async function deleteMessage(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Messages Model - Deleting Message with ID : ${id}`);
 
     return (await Message.findByIdAndDelete(id));

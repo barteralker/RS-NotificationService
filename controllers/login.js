@@ -11,9 +11,8 @@ const userController = require('../controllers/user');
 if (DB_Conn === Constants.DB_CONNS_PG) { var loginModel = require('../modelsPG/login'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var loginModel = require('../modelsMongo/login'); };
 
-function validateLoginInfo(body, tid) {
+function validateLoginInfo(body) {
 
-    logger.setTraceId(tid);
     logger.info('Validating Login Input');
 
     const schema = Joi.object({
@@ -28,15 +27,14 @@ function validateLoginInfo(body, tid) {
 
 };
 
-async function login(user, tid) {
+async function login(user) {
 
-    logger.setTraceId(tid);
     logger.info(`In Logins Controller - Creating New Login`);
 
-    const validationResult = validateLoginInfo(user, tid);
+    const validationResult = validateLoginInfo(user);
     if (validationResult.error) return `Invalid username or password`;
 
-    let userObj = await userController.getUser(user, tid);
+    let userObj = await userController.getUser(user);
 
     if (userObj.length < 1) return 'Invalid username or password';
     userObj = userObj[0];
@@ -49,7 +47,7 @@ async function login(user, tid) {
 
     if (!validatePassword) return `Invalid username or password`;
 
-    loginModel.createLogin(userObj.id, tid)
+    loginModel.createLogin(userObj.id)
 
     const userJwt = jwt.sign({
         user_id: userObj.id

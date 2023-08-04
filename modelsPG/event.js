@@ -3,15 +3,13 @@ const logger = require('../startup/loggingSetup');
 const pg = require('../dbConnections/pgConnection');
 const queries = require('../postgresQueries/event');
 
-async function getAllEvents(tid) {
+async function getAllEvents() {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Getting All Events`);
 
     pool = new pg.Pool(pg.credentials);
 
     const querySQl = queries.GET_ALL_EVENTS;
-    logger.setTraceId(tid);
     logger.info(`Running Postgres query : ${querySQl}`);
 
     const result = await pool.query(querySQl);
@@ -22,9 +20,8 @@ async function getAllEvents(tid) {
 
 }
 
-async function getFilteredEvents(appendee, tid) {
+async function getFilteredEvents(appendee) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Getting Filtered Events`);
 
     pool = new pg.Pool(pg.credentials);
@@ -38,9 +35,8 @@ async function getFilteredEvents(appendee, tid) {
 
 }
 
-async function getEventById(id, tid) {
+async function getEventById(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Getting Event with ID ${id}`);
 
     pool = new pg.Pool(pg.credentials);
@@ -48,7 +44,6 @@ async function getEventById(id, tid) {
     const querySQl = queries.GET_EVENT_BY_ID;
     const values = [id];
 
-    logger.setTraceId(tid);
     logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
@@ -58,9 +53,8 @@ async function getEventById(id, tid) {
 
 }
 
-async function createEvent(event, tid) {
+async function createEvent(event) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Creating New Event`);
 
     pool = new pg.Pool(pg.credentials);
@@ -68,7 +62,6 @@ async function createEvent(event, tid) {
     const querySQl = queries.CREATE_EVENT;
     const values = [event.application_id, event.name, event.description];
 
-    logger.setTraceId(tid);
     logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
@@ -78,9 +71,8 @@ async function createEvent(event, tid) {
 
 }
 
-async function updateEvent(id, event, tid) {
+async function updateEvent(id, event) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Updating Event with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
@@ -88,7 +80,6 @@ async function updateEvent(id, event, tid) {
     const querySQl = queries.UPDATE_EVENT;
     const values = [event.application_id, event.name, event.description, id];
 
-    logger.setTraceId(tid);
     logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     
@@ -98,9 +89,8 @@ async function updateEvent(id, event, tid) {
 
 }
 
-async function deleteEvent(id, tid) {
+async function deleteEvent(id) {
 
-    logger.setTraceId(tid);
     logger.info(`In Events Model - Deleting Event with ID : ${id}`);
 
     pool = new pg.Pool(pg.credentials);
@@ -108,7 +98,6 @@ async function deleteEvent(id, tid) {
     const querySQl = queries.DELETE_EVENT;
     const values = [id];
 
-    logger.setTraceId(tid);
     logger.info(`Running Postgres query : ${querySQl}`);
     const result = await pool.query(querySQl, values);
     

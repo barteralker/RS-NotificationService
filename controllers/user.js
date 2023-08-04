@@ -8,9 +8,8 @@ const bcrypt = require('bcrypt');
 if (DB_Conn === Constants.DB_CONNS_PG) { var userModel = require('../modelsPG/user'); };
 if (DB_Conn === Constants.DB_CONNS_MONGO) { var userModel = require('../modelsMongo/user'); };
 
-function validateUser(body, tid) {
+function validateUser(body) {
 
-    logger.setTraceId(tid);
     logger.info('Validating User Input');
     const schema = Joi.object({
         
@@ -25,9 +24,8 @@ function validateUser(body, tid) {
 
 };
 
-async function createUser(user, tid) {
+async function createUser(user) {
 
-    logger.setTraceId(tid);
     logger.info(`In Users Controller - Creating New User`);
 
     const validationResult = validateUser(user);
@@ -51,24 +49,22 @@ async function createUser(user, tid) {
     
 }
 
-async function checkUserExistence(user, tid) {
+async function checkUserExistence(user) {
 
-    logger.setTraceId(tid);
     logger.info(`In Users Controller - Checking if User exists`);
 
-    result = await userModel.getUser(user, tid);
+    result = await userModel.getUser(user);
     
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows.length > 0;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result.length > 0;
 
 }
 
-async function getUser(user, tid) {
+async function getUser(user) {
 
-    logger.setTraceId(tid);
     logger.info(`In Users Controller - Getting User`);
 
-    result = await userModel.getUser(user, tid);
+    result = await userModel.getUser(user);
     
     if (DB_Conn === Constants.DB_CONNS_PG) return result.rows;
     if (DB_Conn === Constants.DB_CONNS_MONGO) return result;

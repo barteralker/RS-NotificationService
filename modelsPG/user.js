@@ -3,9 +3,8 @@ const logger = require('../startup/loggingSetup');
 const pg = require('../dbConnections/pgConnection');
 const queries = require('../postgresQueries/user');
 
-async function createUser(user, tid) {
+async function createUser(user) {
 
-    logger.setTraceId(tid);
     logger.info(`In Users Model - Creating New User`);
 
     pool = new pg.Pool(pg.credentials);
@@ -21,9 +20,8 @@ async function createUser(user, tid) {
 
 }
 
-async function getUser(user, tid) {
+async function getUser(user) {
 
-    logger.setTraceId(tid);
     logger.info(`In Users Model - Getting User`);
 
     pool = new pg.Pool(pg.credentials);
