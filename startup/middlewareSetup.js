@@ -8,7 +8,7 @@ const message = require('../routes/message.js');
 const user = require('../routes/user.js');
 const login = require('../routes/login.js')
 
-const errorHandler = require('../Middleware/ErrorHandler.js')
+const errorHandler = require('../middleware/ErrorHandler.js')
 
 module.exports = (app) => {
 

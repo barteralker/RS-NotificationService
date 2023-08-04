@@ -3,7 +3,7 @@ const express = require('express');
 const routerApp = express.Router();
 routerApp.use(express.json());
 const userController = require('../controllers/user');
-const log = require('../Middleware/Logger');
+const log = require('../middleware/Logger');
 const traceIdGen = require('../utils/TraceIdGenerator');
 
 routerApp.post('', log, async (req, res) => {

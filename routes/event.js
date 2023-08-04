@@ -3,8 +3,8 @@ const express = require('express');
 const routerApp = express.Router();
 routerApp.use(express.json());
 const eventController = require('../controllers/event');
-const auth = require('../Middleware/Authenticator');
-const log = require('../Middleware/Logger');
+const auth = require('../middleware/Authenticator');
+const log = require('../middleware/Logger');
 const traceIdGen = require('../utils/TraceIdGenerator');
 
 routerApp.get('/', log, async (req, res) => {
