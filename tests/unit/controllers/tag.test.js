@@ -3,7 +3,6 @@ let server = require('../../../index');
 
 const logger = require('../../../startup/loggingSetup');
 const config = require('config');
-require(`../../../config/${config.get('instance')}.json`).DB_CONN = config.get('DB_CONN');
 const DB_Conn = require(`../../../config/${config.get('instance')}.json`).DB_CONN;
 const Constants = require('../../../resources/constants');
 const tagController = require('../../../controllers/tag');
