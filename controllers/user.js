@@ -5,8 +5,8 @@ const Constants = require('../resources/constants');
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var userModel = require('../modelsPG/user'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var userModel = require('../modelsMongo/user'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var userModel = require('../pgModels/user'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var userModel = require('../mongoModels/user'); };
 
 function validateUser(body) {
 

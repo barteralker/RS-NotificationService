@@ -9,8 +9,8 @@ const messageController = require('./message');
 const notificationParser = require('../utils/NotificationParser');
 const utils = require('../utils/FilterUtils');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var NotificationModel = require('../modelsPG/notification'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var NotificationModel = require('../modelsMongo/notification'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var NotificationModel = require('../pgModels/notification'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var NotificationModel = require('../mongoModels/notification'); };
 
 function validateNotification(body, validator) {
 

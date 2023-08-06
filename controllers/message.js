@@ -6,8 +6,8 @@ const Constants = require('../resources/constants');
 const Joi = require('joi');
 const utils = require('../utils/FilterUtils');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var MessageModel = require('../modelsPG/message'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var MessageModel = require('../modelsMongo/message'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var MessageModel = require('../pgModels/message'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var MessageModel = require('../mongoModels/message'); };
 
 function validateMessage(body, validator) {
 

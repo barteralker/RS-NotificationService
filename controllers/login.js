@@ -8,8 +8,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userController = require('../controllers/user');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var loginModel = require('../modelsPG/login'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var loginModel = require('../modelsMongo/login'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var loginModel = require('../pgModels/login'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var loginModel = require('../mongoModels/login'); };
 
 function validateLoginInfo(body) {
 

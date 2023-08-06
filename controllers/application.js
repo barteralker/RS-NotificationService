@@ -6,8 +6,8 @@ const Constants = require('../resources/constants');
 const Joi = require('joi');
 const utils = require('../utils/FilterUtils');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../modelsPG/application'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../modelsMongo/application'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var applicationModel = require('../pgModels/application'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var applicationModel = require('../mongoModels/application'); };
 
 function validateApplication(body, validator) {
 

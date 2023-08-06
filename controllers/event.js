@@ -6,8 +6,8 @@ const Constants = require('../resources/constants');
 const Joi = require('joi');
 const utils = require('../utils/FilterUtils');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var eventModel = require('../modelsPG/event'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../modelsMongo/event'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var eventModel = require('../pgModels/event'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var eventModel = require('../mongoModels/event'); };
 
 function validateEvent(body, validator) {
 

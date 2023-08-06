@@ -4,8 +4,8 @@ const config = require('config');
 const DB_Conn = require(`../config/${config.get('instance')}.json`).DB_CONN;
 const Constants = require('../resources/constants');
 
-if (DB_Conn === Constants.DB_CONNS_PG) { var TagModel = require('../modelsPG/tag'); };
-if (DB_Conn === Constants.DB_CONNS_MONGO) { var TagModel = require('../modelsMongo/tag'); };
+if (DB_Conn === Constants.DB_CONNS_PG) { var TagModel = require('../pgModels/tag'); };
+if (DB_Conn === Constants.DB_CONNS_MONGO) { var TagModel = require('../mongoModels/tag'); };
 
 async function createTags(tags) {
 
